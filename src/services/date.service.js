@@ -26,7 +26,6 @@ const save = (date) => {
 
 
 const getDate = (id) => {
-  debugger;
   let header = authHeader();
   let query ='?Id='+id;
 

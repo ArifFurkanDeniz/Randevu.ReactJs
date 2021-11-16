@@ -47,7 +47,7 @@ import ClientService from '../../services/client.service'
 import ClientEdit from '../../views/clients/ClientEdit.js'
 
 //const fields = ['fullName','email','phone1','genderType','id']
-const fields = ['Ad Soyad','Email','Telefon','Cinsiyet','id']
+const fields = ['No','Ad Soyad','Email','Telefon','Cinsiyet','id']
 
 
 
@@ -77,10 +77,10 @@ const Clients = () => {
 
    const sendApi = () =>{
 
-    ClientService.getClients(page, fullName).then(
+    ClientService.getClients(page, fullName, year).then(
       (result) => {
         setTotalPage(result.data.totalPage);
-
+        setTotalItem(result.data.totalItem);
         let newClients = [];
         result.data.data.forEach(element => {
           newClients.push({
@@ -88,7 +88,8 @@ const Clients = () => {
             "Email" : element.email,
             "Telefon" : element.phone1,
             "Cinsiyet" : element.genderType,
-            "id":element.id
+            "id":element.id,
+            "No":element.no
           });
         });
         setClientsData(newClients);
@@ -111,6 +112,7 @@ const Clients = () => {
    }
 
    const [totalPage, setTotalPage] = useState(_totalPage)
+   const [totalItem, setTotalItem] = useState(0)
 
 
   const pageChange = newPage => {
@@ -119,9 +121,13 @@ const Clients = () => {
   }
 
   const [fullName, setFullName] = useState(null);
+  const [year, setYear] = useState(null);
 
   const fullNameChanged = (value) => {
     setFullName(value)
+  }
+  const yearChanged = (value) => {
+    setYear(value)
   }
 
   const send = () => {
@@ -131,6 +137,7 @@ const Clients = () => {
 
   const clear = () => {
     setFullName('');
+    setYear('');
   }
 
   const [editId, setEditId] = useState(null)
@@ -141,6 +148,35 @@ const Clients = () => {
     setshowEdit(showEdit);
   }
 
+  const [showDelete, setShowDelete] = useState(false)
+  const onClickDelete = (showDelete,id) =>{
+    setEditId(id);
+    setShowDelete(showDelete);
+  }
+
+  const [showModal, setShowModal] = useState(false)
+  const deleteDate = () =>{
+    
+    ClientService.deleteDate(editId).then(
+      (result) => {
+        setShowModal(true);
+        sendApi();
+      },
+      (error) => {
+    
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+  
+        // setLoading(false);
+        // setMessage(resMessage);
+      }
+    );
+    setShowDelete(!showDelete);
+  }
 
   return (
       <div>
@@ -161,6 +197,13 @@ const Clients = () => {
                     <CInput id="text-input" name="text-input"  onChange={(e) => fullNameChanged(e.target.value)} value={fullName} />
                     {/* <CFormText>This is a help text</CFormText> */}
                   </CCol>
+                  <CCol md="2">
+                    <CLabel htmlFor="text-input">Yıl</CLabel>
+                  </CCol>
+                  <CCol xs="12" md="4">
+                    <CInput id="text-input" name="text-input"  onChange={(e) => yearChanged(e.target.value)} value={year} />
+                    {/* <CFormText>This is a help text</CFormText> */}
+                  </CCol>
                 </CFormGroup>
             
               </CForm>
@@ -175,6 +218,13 @@ const Clients = () => {
       <CRow>
         <CCol>
           <CCard>
+          <CCardHeader>
+            <div class="d-flex">
+              <div></div>
+              <div class="ml-auto">Toplam kayıt : <strong>{totalItem}</strong></div>
+            </div>
+     
+            </CCardHeader>
             <CCardBody>
             <CDataTable
               items={ClientsData}
@@ -195,6 +245,7 @@ const Clients = () => {
                   <td>
                      <CButtonGroup>
                       <CButton color="secondary" onClick={() => onClickEdit(!showEdit, item.id)}>Düzenle</CButton>
+                      <CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>
                     </CButtonGroup>
                   </td>
                 ),
@@ -226,7 +277,38 @@ const Clients = () => {
         {/* <CModalFooter>
           <CButton color="secondary" onClick={() => setshowEdit(!showEdit)}>Kapat</CButton>
         </CModalFooter> */}
-      </CModal>          
+      </CModal>       
+      <CModal 
+        show={showDelete} 
+        onClose={() => setShowDelete(!showDelete)}
+        size="s"
+      >
+        <CModalHeader closeButton>
+          <CModalTitle>Sil</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+        {<div>Danışanı silmek istediğinize emin misiniz?</div>}
+        </CModalBody>
+        <CModalFooter>
+        <CButton color="primary" onClick={() => { deleteDate();}}>Evet</CButton>
+          <CButton color="secondary" onClick={() => setShowDelete(!showDelete)}>Hayır</CButton>
+        </CModalFooter>
+      </CModal>    
+      <CModal 
+        show={showModal} 
+        onClose={() => setShowModal(!showModal)}
+        size="s"
+      >
+        <CModalHeader closeButton>
+          <CModalTitle>Başarılı</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+            <div>Danışan silinmiştir.</div>     
+        </CModalBody>
+  <CModalFooter>
+          <CButton color="secondary" onClick={() => setShowModal(!showModal)}>Tamam</CButton>
+        </CModalFooter> 
+      </CModal>       
     </div>
 
   )

@@ -48,6 +48,7 @@ import DateService from '../../services/date.service'
 import RoomService from '../../services/room.service'
 import UserService from '../../services/user.service'
 import ClientEdit from '../../views/clients/ClientEdit.js'
+import ComingCaseService from '../../services/comingCase.service'
 
 
 // const { page } = useParams();
@@ -57,6 +58,7 @@ const DateEdit = (data) => {
     const [usersData, setUsersData] = useState([]);
     const [clientsData, setClientsData] = useState([]);
     const [roomsData, setRoomsData] = useState([]);
+    const [comingCasesData, setComingCasesData] = useState([]);
     const [showModal, setShowModal] = useState(false)
     const [date, setDate] = useState({
       dateTime: null,
@@ -64,6 +66,7 @@ const DateEdit = (data) => {
       user1Id: null,
       user2Id: null,
       roomId: null,
+      comingCaseId: null,
       directional: null,
       costUser: 0,
       costCase: 0,
@@ -74,6 +77,7 @@ const DateEdit = (data) => {
 
     UserService.getUsers().then(
       (result) => {
+     
         setUsersData(result.data.data);
       },
       (error) => {
@@ -108,11 +112,33 @@ const DateEdit = (data) => {
       }
     );
 
+    ComingCaseService.getComingCases().then(
+      (result) => {
+        setComingCasesData(result.data);
+      },
+      (error) => {
+    
+        // const resMessage =
+        //   (error.response &&
+        //     error.response.data &&
+        //     error.response.data.message) ||
+        //   error.message ||
+        //   error.toString();
+  
+        // setLoading(false);
+        // setMessage(resMessage);
+      }
+    );
+    
+
+
+
     getClients();
  
       if(data.id != 0)
       DateService.getDate(data.id).then(
         (result) => {
+
             setDate(result.data);
         },
         (error) => {
@@ -133,8 +159,12 @@ const DateEdit = (data) => {
 
 
   const changeHandler = e => {
-
-    setDate({...date, [e.target.name]: e.target.value})
+    debugger;
+    let data= e.target.value; 
+    if (e.target.value == "") {
+      data = null;
+    }
+    setDate({...date, [e.target.name]: data})
  }
 
  
@@ -148,6 +178,7 @@ const DateEdit = (data) => {
       user1Id: null,
       user2Id: null,
       roomId: null,
+      comingCaseId: null,
       directional: null,
       costUser: 0,
       costCase: 0,
@@ -156,6 +187,7 @@ const DateEdit = (data) => {
 
     newDate.id = date.id;
     newDate.dateTime = date.dateTime + 'T'+ date.dateHour + ':00';
+    debugger;
     newDate.clientId = date.clientId;
     newDate.user1Id = date.user1Id;
     newDate.user2Id = date.user2Id;
@@ -165,6 +197,7 @@ const DateEdit = (data) => {
     newDate.costCase = date.costCase;
     newDate.costStatus = date.costStatus;
     newDate.description = date.description;
+    newDate.comingCaseId = date.comingCaseId;
 
     DateService.save(newDate).then(
         (result) => {
@@ -376,6 +409,26 @@ const DateEdit = (data) => {
                  <option value="1">Ödendi</option>
                   </CSelect>
                   </CCol>
+                </CFormGroup>
+                <CFormGroup row>
+                <CCol md="2">
+                    <CLabel htmlFor="text-input">Geliş Nedeni</CLabel>
+                  </CCol>
+                  <CCol xs="12" md="4">
+                  <CSelect custom name="comingCaseId" id="select" onChange={(e) => changeHandler(e)} value={date.comingCaseId}>
+                 <option value="">Seçiniz</option>
+                    {comingCasesData.map(item => (
+                      <option
+                        key={item.title}
+                        value={item.id}
+                      >
+                        {item.title}
+                      </option>
+                    ))}
+                  </CSelect>
+                  </CCol>
+                
+         
                 </CFormGroup>
                 <CFormGroup row>
                 <CCol md="2">

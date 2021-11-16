@@ -44,8 +44,10 @@ import {
   CModalFooter,
   CModalHeader,
   CModalTitle,
-  CSwitch
-
+  CSwitch,
+  CListGroup,
+  CListGroupItem,
+  CBadge
 } from '@coreui/react'
 
 import CIcon from '@coreui/icons-react'
@@ -218,7 +220,7 @@ const Dashboard = () => {
             {
               title: key, 
               percent:Math.round(parseInt(value) * 100 / totalDateDayStatistic),
-              value: ": "+value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
+              value: value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
              
               icon: null
             })
@@ -261,7 +263,7 @@ const Dashboard = () => {
             {
               title: key, 
               percent:Math.round(parseInt(value) * 100 / totalSexStatistic),
-              value: ": "+value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
+              value: value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
              
               icon: null
             })
@@ -295,7 +297,7 @@ const Dashboard = () => {
             {
               title: key, 
               percent:Math.round(parseInt(value) * 100 / totalDirectionalStatistic),
-              value: ": "+value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
+              value: value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
              
               icon: null
             })
@@ -329,7 +331,7 @@ const Dashboard = () => {
             {
               title: key, 
               percent:Math.round(parseInt(value) * 100 / totalDateHourStatistic),
-              value: ": "+value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
+              value: value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
              
               icon: null
             })
@@ -529,19 +531,12 @@ const clear = () => {
                   Randevu - Gün
                 </CCardHeader>
                 {DateDayStatisticData.map((item, index) => (
-                    <div className="progress-group" key={index}>
-                      <div className="progress-group-header">
-                        <CIcon className="me-2" icon={item.icon} size="lg" />
-                        <span>{item.title}</span>
-                        <span className="ms-auto fw-semibold">
-                          {item.value}{' '}
-                          <span className="text-medium-emphasis small">({item.percent}%)</span>
-                        </span>
-                      </div>
-                      <div className="progress-group-bars">
-                        <CProgress thin color="success" value={item.percent} />
-                      </div>
-                    </div>
+                      <CListGroupItem className="d-flex justify-content-between align-items-center">
+                      {item.title}
+                       <CBadge color="secondary" shape="rounded-pill">
+                       {item.value} - {item.percent} %
+                       </CBadge>
+                     </CListGroupItem>
                   ))}
       
 
@@ -551,61 +546,49 @@ const clear = () => {
                   Randevu - Saat
                 </CCardHeader>
                 {DateHourStatisticData.map((item, index) => (
-                    <div className="progress-group" key={index}>
-                      <div className="progress-group-header">
-                        <CIcon className="me-2" icon={item.icon} size="lg" />
-                        <span>{item.title}</span>
-                        <span className="ms-auto fw-semibold">
-                          {item.value}{' '}
-                          <span className="text-medium-emphasis small">({item.percent}%)</span>
-                        </span>
-                      </div>
-                      <div className="progress-group-bars">
-                        <CProgress thin color="success" value={item.percent} />
-                      </div>
-                    </div>
+                     <CListGroupItem className="d-flex justify-content-between align-items-center">
+                     {item.title}
+                      <CBadge color="secondary" shape="rounded-pill">
+                      {item.value} - {item.percent} %
+                      </CBadge>
+                    </CListGroupItem>
                   ))}
                 </CCol>
 
+
+          
                 <CCol xs={12} md={6} xl={6}>
 
                 <CCardHeader>
                   Danışan - Cinsiyet
                 </CCardHeader>
-                {SexStatisticData.map((item, index) => (
-                    <div className="progress-group" key={index}>
-                      <div className="progress-group-header">
-                        <CIcon className="me-2" icon={item.icon} size="lg" />
-                        <span>{item.title}</span>
-                        <span className="ms-auto fw-semibold">
-                          {item.value}{' '}
-                          <span className="text-medium-emphasis small">({item.percent}%)</span>
-                        </span>
-                      </div>
-                      <div className="progress-group-bars">
-                        <CProgress thin color="success" value={item.percent} />
-                      </div>
-                    </div>
+              
+                <CListGroup>
+                    {SexStatisticData.map((item, index) => (
+                    <CListGroupItem className="d-flex justify-content-between align-items-center">
+                   {item.title}
+                    <CBadge color="secondary" shape="rounded-pill">
+                    {item.value} - {item.percent} %
+                    </CBadge>
+                  </CListGroupItem>
                   ))}
+                  
+               
+                </CListGroup>
+       
+
 
                   <div className="mb-5"></div>
                 <CCardHeader>
                Yönlendiren - Danışan
                 </CCardHeader>
                   {DirectionalStatisticData.map((item, index) => (
-                    <div className="progress-group" key={index}>
-                      <div className="progress-group-header">
-                        <CIcon className="me-2" icon={item.icon} size="lg" />
-                        <span>{item.title}</span>
-                        <span className="ms-auto fw-semibold">
-                          {item.value}{' '}
-                          <span className="text-medium-emphasis small">({item.percent}%)</span>
-                        </span>
-                      </div>
-                      <div className="progress-group-bars">
-                        <CProgress thin color="success" value={item.percent} />
-                      </div>
-                    </div>
+                     <CListGroupItem className="d-flex justify-content-between align-items-center">
+                     {item.title}
+                      <CBadge color="secondary" shape="rounded-pill">
+                      {item.value} - {item.percent} %
+                      </CBadge>
+                    </CListGroupItem>
                   ))}
                 </CCol>
               </CRow>

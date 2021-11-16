@@ -3,6 +3,17 @@ import authHeader from "./auth-header";
 
 const API_URL = "https://localhost:44376/api/Client/";
 
+const deleteDate = (id) => {
+  let header = authHeader();
+  let query ='?Id='+id;
+
+  return axios
+  .get(API_URL + 'Delete'+ query, { headers: header })
+  .then((response) => {
+    return response;
+  });
+}
+
 const save = (client) => {
   let header = authHeader();
 
@@ -25,7 +36,7 @@ const getClient = (id) => {
   });
 }
 
-const getClients = (page, fullName) => {
+const getClients = (page, fullName, year) => {
   
   let pageSize = 20;
   if(page==0)
@@ -50,6 +61,9 @@ const getClients = (page, fullName) => {
   {
     query += '&FullName=' + fullName;
   }
+  if (year != null) {
+    query += '&Year=' + year;
+  }
 
   return axios
     .get(API_URL + 'GetList'+ query,  { headers: header })
@@ -62,5 +76,6 @@ const getClients = (page, fullName) => {
 export default {
   save,
   getClient,
-  getClients
+  getClients,
+  deleteDate
 };

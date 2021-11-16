@@ -43,12 +43,13 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 // import usersData from './UsersData'
+
 import DateService from '../../services/date.service'
 import UserService from '../../services/user.service'
 import DateEdit from '../../views/dates/DateEdit.js'
 
 //const fields = ['dateTime','dateDay','dateHour','client','user1','user2','room','directional','costUser','costCase','id']
-const fields = ['Tarih','Gün','Saat','Danışan','Uzman1','Uzman2','Oda','Yönlendiren','Uzman Ücreti','Kasa Ücreti','Seçenekler']
+const fields = ['Tarih','Gün','Saat','Danışan','Uzman1','Uzman2','Oda','Yönlendiren','Uzman Ücreti','Kasa Ücreti', "Toplam Ücret",'id']
 // const { page } = useParams();
 
 const Dates = () => {
@@ -56,6 +57,7 @@ const Dates = () => {
   const [page, setPage] = useState(1)
   const [datesData, setDatesData] = useState([]);
   const [usersData, setUsersData] = useState([]);
+
 
   useEffect(() => {
 
@@ -106,6 +108,7 @@ const Dates = () => {
           {
             "Tarih" : element.dateTime,
             "Gün" : element.dateDay,
+            "Danışan" : element.client,
             "Saat" : element.dateHour,
             "Uzman1" : element.user1,
             "Uzman2" : element.user2,
@@ -113,7 +116,9 @@ const Dates = () => {
             "Yönlendiren" : element.directional,
             "Uzman Ücreti" : element.costUser,
             "Kasa Ücreti" : element.costCase,
-            "Seçenekler" : element.id
+            "id" : element.id,
+            "Toplam Ücret" : element.costCase + element.costUser
+ 
           });
         });
         setDatesData(newDates);
@@ -190,7 +195,7 @@ const Dates = () => {
   const [editId, setEditId] = useState(null)
   const [showEdit, setshowEdit] = useState(false)
   const onClickEdit = (showEdit,id) =>{
-
+debugger;
     setEditId(id);
     setshowEdit(showEdit);
   }
@@ -328,13 +333,13 @@ const Dates = () => {
               // pagination
               scopedSlots={{
                 'Gün': (item) => (
-                  <td>
+             
                  <td>
                       {item.Gün == "Monday"?"Pazartesi":item.Gün == "Tuesday"?"Salı":item.Gün == "Wednesday"?"Çarşamba":item.Gün == "Thursday"?"Perşembe":item.Gün == "Friday"?"Cuma":item.Gün == "Saturday"?"Cumartesi":item.Gün == "Sunday"?"Pazar":""}
                   </td>
-               </td>
+             
                 ),
-                      'Seçenekler':
+                      'id':
                 (item) => (
                   <td>
                      <CButtonGroup>
