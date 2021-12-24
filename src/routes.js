@@ -25,7 +25,7 @@ const ButtonDropdowns = React.lazy(() => import('./views/buttons/button-dropdown
 const ButtonGroups = React.lazy(() => import('./views/buttons/button-groups/ButtonGroups'));
 const Buttons = React.lazy(() => import('./views/buttons/buttons/Buttons'));
 const Charts = React.lazy(() => import('./views/charts/Charts'));
-const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
+
 const CoreUIIcons = React.lazy(() => import('./views/icons/coreui-icons/CoreUIIcons'));
 const Flags = React.lazy(() => import('./views/icons/flags/Flags'));
 const Brands = React.lazy(() => import('./views/icons/brands/Brands'));
@@ -42,10 +42,13 @@ const Titles = React.lazy(() => import('./views/titles/Titles'));
 const Dates = React.lazy(() => import('./views/dates/Dates'));
 const Clients = React.lazy(() => import('./views/clients/Clients'));
 const Rooms = React.lazy(() => import('./views/rooms/Rooms'));
+const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
+const Profit = React.lazy(() => import('./views/profit/Profit'));
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
+  { path: '/profit', name: 'Profit', component: Profit },
   { path: '/dates', name: 'Dates', component: Dates },
   { path: '/users', name: 'Users', component: Users },
   { path: '/clients', name: 'Clients', component: Clients },

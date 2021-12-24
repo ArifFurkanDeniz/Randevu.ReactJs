@@ -1,8 +1,21 @@
 import axios from "axios";
 import authHeader from "./auth-header";
+import getApiRoot from "./api-root";
 
-const API_URL = "https://localhost:44376/api/dashboard/";
+const API_URL = getApiRoot() +"Dashboard/";
 
+const UserClientStatistic = (data) => {
+  debugger;
+  let query ="userId="+data.id;
+
+  let header = authHeader();
+
+  return axios
+    .get(API_URL + 'UserClientStatistic?' + query,  { headers: header })
+    .then((response) => {
+      return response;
+    });
+};
 
 const DateDayStatistic = (date1, date2) => {
   
@@ -151,5 +164,6 @@ export default {
   UserStatistic,
   TownStatistic,
   SexStatistic,
-  DirectionalStatistic
+  DirectionalStatistic,
+  UserClientStatistic
 };

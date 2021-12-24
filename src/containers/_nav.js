@@ -3,16 +3,26 @@ var data = [];
 const user = JSON.parse(localStorage.getItem('user'));
 
 if(user.data.userData.role[0] =="Admin")
-data.push( {
-  _tag: 'CSidebarNavItem',
-  name: 'Anasayfa',
-  to: '/dashboard',
-  icon: 'cil-speedometer',
-  badge: {
-    color: 'info',
-    // text: 'NEW',
-  }
-});
+{
+  data.push( {
+    _tag: 'CSidebarNavItem',
+    name: 'Anasayfa',
+    to: '/dashboard',
+    icon: 'cil-speedometer',
+    badge: {
+      color: 'info',
+      // text: 'NEW',
+    }
+  });
+
+  data.push(   {
+    _tag: 'CSidebarNavItem',
+    name: 'Kazanç Listesi',
+    to: '/profit',
+    icon: 'cil-chart-pie',
+  });
+}
+
 
 // data.push(  {
 //   _tag: 'CSidebarNavTitle',
@@ -36,6 +46,8 @@ if(user.data.userData.role[0] =="Admin")
     to: '/users',
     icon: 'cil-star',
   });
+
+}
   
   data.push( {
     _tag: 'CSidebarNavItem',
@@ -44,6 +56,8 @@ if(user.data.userData.role[0] =="Admin")
     icon: 'cil-bell',
   });
   
+  if(user.data.userData.role[0] =="Admin")
+{
   data.push( {
     _tag: 'CSidebarNavItem',
     name: 'Oda Listesi',

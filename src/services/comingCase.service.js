@@ -1,7 +1,8 @@
 import axios from "axios";
 import authHeader from "./auth-header";
+import getApiRoot from "./api-root";
 
-const API_URL = "https://localhost:44376/api/ComingCase/";
+const API_URL = getApiRoot() +"ComingCase/";
 
 const getComingCases = () => {
   

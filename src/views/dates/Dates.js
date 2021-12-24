@@ -48,13 +48,15 @@ import DateService from '../../services/date.service'
 import UserService from '../../services/user.service'
 import DateEdit from '../../views/dates/DateEdit.js'
 
+const user = JSON.parse(localStorage.getItem('user'));
 //const fields = ['dateTime','dateDay','dateHour','client','user1','user2','room','directional','costUser','costCase','id']
-const fields = ['Tarih','Gün','Saat','Danışan','Uzman1','Uzman2','Oda','Yönlendiren','Uzman Ücreti','Kasa Ücreti', "Toplam Ücret",'id']
+const fields = ['Tarih','Gün','Saat','Danışan','Uzman1','Uzman2','Oda', 'Geliş Nedeni','Yönlendiren',"Toplam Ücret",'Uzman Ücreti','Kasa Ücreti','id']
 // const { page } = useParams();
 
 const Dates = () => {
 
   const [page, setPage] = useState(1)
+
   const [datesData, setDatesData] = useState([]);
   const [usersData, setUsersData] = useState([]);
 
@@ -81,8 +83,20 @@ const Dates = () => {
         }
       );
   
-  
-      sendApi(page,date1,date2,user1,user2,client);
+      var user1s = []
+      if (user1_1 != null && user1_1 != 0){
+        user1s.push(user1_1);
+      }
+      if (user1_2 != null && user1_2 != 0) {
+        user1s.push(user1_2);
+      }
+      if (user1_3 != null && user1_3 != 0){
+        user1s.push(user1_3);
+      }
+      if (user1_4 != null && user1_4 != 0) {
+        user1s.push(user1_4);
+      }
+      sendApi(orderByUserName);
     }
    
 
@@ -95,9 +109,23 @@ const Dates = () => {
    const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
    const _totalPage = Number(0);
 
-   const sendApi = () =>{
+   const sendApi = (orderByUser) =>{
 
-    DateService.getDates(page,date1,date2,user1,user2,client).then(
+    var user1s = []
+    if (user1_1 != null && user1_1 != 0) {
+      user1s.push(user1_1);
+    }
+    if (user1_2 != null && user1_2 != 0) {
+      user1s.push(user1_2);
+    }
+    if (user1_3 != null && user1_3 != 0) {
+      user1s.push(user1_3);
+    }
+    if (user1_4 != null && user1_4 != 0) {
+      user1s.push(user1_4);
+    }
+
+    DateService.getDates(page,date1,date2,user1s,user2,client, orderByUser).then(
       (result) => {
         setTotalPage(result.data.totalPage);
         setTotalItem(result.data.totalItem);
@@ -113,11 +141,13 @@ const Dates = () => {
             "Uzman1" : element.user1,
             "Uzman2" : element.user2,
             "Oda" : element.room,
+            "Geliş Nedeni": element.comingCase,
             "Yönlendiren" : element.directional,
             "Uzman Ücreti" : element.costUser,
             "Kasa Ücreti" : element.costCase,
             "id" : element.id,
-            "Toplam Ücret" : element.costCase + element.costUser
+            "Toplam Ücret" : element.costCase + element.costUser,
+            "mobilePhone" : element.mobilePhone
  
           });
         });
@@ -154,11 +184,29 @@ const Dates = () => {
     setClient(value)
   }
 
-  const [user1, setUser1] = useState(null);
+  const [user1_1, setUser1_1] = useState(null);
+  const [user1_2, setUser1_2] = useState(null);
+  const [user1_3, setUser1_3] = useState(null);
+  const [user1_4, setUser1_4] = useState(null);
 
-  const user1Changed = (value) => {
+  const user1_1Changed = (value) => {
 
-    setUser1(value)
+    setUser1_1(value)
+  }
+
+  const user1_2Changed = (value) => {
+
+    setUser1_2(value)
+  }
+
+  const user1_3Changed = (value) => {
+
+    setUser1_3(value)
+  }
+
+  const user1_4Changed = (value) => {
+
+    setUser1_4(value)
   }
 
   const [user2, setUser2] = useState(null);
@@ -179,27 +227,46 @@ const Dates = () => {
     setDate2(value)
   }
 
+  const [orderByUserName, setOrderByUserName] = useState(false)
   const send = () => {
+    setOrderByUserName(false);
     pageChange(1);
-    sendApi();
+    sendApi(false);
+  }
+
+  const orderByUserClick = () => {
+    setOrderByUserName(true);
+    pageChange(1);
+    sendApi(true);
   }
 
   const clear = () => {
+    setOrderByUserName(false);
     setClient('');
-    setUser1(0);
+    setUser1_1(0);
+    setUser1_2(0);
+    setUser1_3(0);
+    setUser1_4(0);
     setUser2(0);
     setDate1('');
     setDate2('');
   }
 
+  const user = JSON.parse(localStorage.getItem('user'));
   const [editId, setEditId] = useState(null)
   const [showEdit, setshowEdit] = useState(false)
   const onClickEdit = (showEdit,id) =>{
-debugger;
     setEditId(id);
     setshowEdit(showEdit);
   }
 
+
+  const onClickSendMessage = (fullName, userName, dateTime, mobilePhone,id) =>{
+    let text = "Sevgili "+ fullName + ", "+ dateTime + " tarihinde "+ userName + " ile Q Psikoloji randevunuz oluşturulmuştur.";
+    let link = "https://api.whatsapp.com/send?phone=+9"+mobilePhone+"&text="+text;
+    window.open(link);
+
+  }
   const [showDelete, setShowDelete] = useState(false)
   const onClickDelete = (showDelete,id) =>{
     setEditId(id);
@@ -212,7 +279,7 @@ debugger;
     DateService.deleteDate(editId).then(
       (result) => {
         setShowModal(true);
-        sendApi();
+        sendApi(orderByUserName);
       },
       (error) => {
     
@@ -255,11 +322,17 @@ debugger;
                   </CCol>
                 </CFormGroup>
                 <CFormGroup row>
+              
+                
+               
+
+                
+               { (user.data.userData.role[0] =="Admin") && <>
                   <CCol md="2">
                     <CLabel htmlFor="text-input">Uzman 1</CLabel>
                   </CCol>
-                  <CCol xs="12" md="4">
-                 <CSelect custom name="select" id="select" onChange={(e) => user1Changed(e.target.value)} value={user1}>
+                  <CCol xs="12" md="1">
+                 <CSelect custom name="select" id="select" onChange={(e) => user1_1Changed(e.target.value)} value={user1_1}>
                  <option value="0">Seçiniz</option>
                     {usersData.map(item => (
                       <option
@@ -271,6 +344,48 @@ debugger;
                     ))}
                   </CSelect>
                   </CCol>
+                  <CCol xs="12" md="1">
+                 <CSelect custom name="select" id="select" onChange={(e) => user1_2Changed(e.target.value)} value={user1_2}>
+                 <option value="0">Seçiniz</option>
+                    {usersData.map(item => (
+                      <option
+                        key={item.fullName}
+                        value={item.id}
+                      >
+                        {item.fullName}
+                      </option>
+                    ))}
+                  </CSelect>
+                  </CCol>
+               
+                  <CCol xs="12" md="1">
+                 <CSelect custom name="select" id="select" onChange={(e) => user1_3Changed(e.target.value)} value={user1_3}>
+                 <option value="0">Seçiniz</option>
+                    {usersData.map(item => (
+                      <option
+                        key={item.fullName}
+                        value={item.id}
+                      >
+                        {item.fullName}
+                      </option>
+                    ))}
+                  </CSelect>
+                  </CCol>
+                  <CCol xs="12" md="1">
+                 <CSelect custom name="select" id="select" onChange={(e) => user1_4Changed(e.target.value)} value={user1_4}>
+                 <option value="0">Seçiniz</option>
+                    {usersData.map(item => (
+                      <option
+                        key={item.fullName}
+                        value={item.id}
+                      >
+                        {item.fullName}
+                      </option>
+                    ))}
+                  </CSelect>
+              
+                  </CCol>  </>}
+
                   <CCol md="2">
                     <CLabel htmlFor="text-input">Uzman 2</CLabel>
                   </CCol>
@@ -303,6 +418,7 @@ debugger;
             <CCardFooter>
             <div class="d-flex">
               <div>  <CButton type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Gönder</CButton> </div>
+              <div>  <CButton type="submit" size="sm" color="primary" onClick={() => {orderByUserClick();}}><CIcon name="cil-scrubber" /> Uzmana Göre Sırala</CButton> </div>
               <div>  <CButton type="reset" size="sm" color="danger"  onClick={() => clear()} ><CIcon name="cil-ban"/> Temizle</CButton></div>
               <div class="ml-auto"> <CButton type="button" size="sm" color="success"  onClick={() => onClickEdit(!showEdit,0)} ><CIcon name="cil-arrow-right"/> Ekle</CButton></div>
             </div>
@@ -323,6 +439,7 @@ debugger;
             </CCardHeader>
             <CCardBody>
             <CDataTable
+           
               items={datesData}
               fields={fields}
               hover
@@ -339,14 +456,27 @@ debugger;
                   </td>
              
                 ),
-                      'id':
+                'Danışan':
                 (item) => (
                   <td>
-                     <CButtonGroup>
-                      <CButton color="secondary" onClick={() => onClickEdit(!showEdit, item.id)}>Düzenle</CButton>
-                      <CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>
-                    </CButtonGroup>
+                    
+                    {item.Danışan == null ?<span style={{color: "red"}}>İzin</span>:item.Danışan}
                   </td>
+                ),
+                      'id':
+                (item) => (
+         
+
+         
+                  <td>
+
+                        <CButtonGroup>
+                          {user.data.userData.role[0] =="Admin"?<CButton color="secondary" onClick={() => onClickSendMessage(item.Danışan, item.Uzman1, item.Tarih, item.mobilePhone, item.id)}>Mesaj Gönder</CButton>:""}
+                          {user.data.userData.role[0] =="Admin"?<CButton color="secondary" onClick={() => onClickEdit(!showEdit, item.id)}>Düzenle</CButton>:""}
+                          {user.data.userData.role[0] =="Admin"?<CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>:""}
+                        </CButtonGroup>
+                  </td>
+                
                 ),
               }}
             />
@@ -364,7 +494,7 @@ debugger;
     </CRow>     
     <CModal 
         show={showEdit} 
-        onClose={() => {setshowEdit(!showEdit); sendApi();}}
+        onClose={() => {setshowEdit(!showEdit); sendApi(orderByUserName);}}
         size="xl"
       >
         <CModalHeader closeButton>

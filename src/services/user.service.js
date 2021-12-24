@@ -1,7 +1,8 @@
 import axios from "axios";
 import authHeader from "./auth-header";
+import getApiRoot from "./api-root";
 
-const API_URL = "https://localhost:44376/api/user/";
+const API_URL = getApiRoot() +"User/";
 
 const deleteUser = (id) => {
   let header = authHeader();
@@ -19,10 +20,13 @@ const save = (user) => {
 
   user.userRoles = [];
 
-  user.userRoles.push(
-    {
-      "RoleId" : user.role
-    });
+  if (user.role!=0) {
+    user.userRoles.push(
+      {
+        "RoleId" : user.role
+      });
+  }
+ 
 
   return axios
   .post(API_URL + 'Save', user, { headers: header })

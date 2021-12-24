@@ -1,7 +1,8 @@
 import axios from "axios";
 import authHeader from "./auth-header";
+import getApiRoot from "./api-root";
 
-const API_URL = "https://localhost:44376/api/Client/";
+const API_URL = getApiRoot() +"Client/";
 
 const deleteDate = (id) => {
   let header = authHeader();
@@ -36,7 +37,7 @@ const getClient = (id) => {
   });
 }
 
-const getClients = (page, fullName, year) => {
+const getClients = (page, fullName, year, month) => {
   
   let pageSize = 20;
   if(page==0)
@@ -63,6 +64,9 @@ const getClients = (page, fullName, year) => {
   }
   if (year != null) {
     query += '&Year=' + year;
+  }
+  if (month != null) {
+    query += '&Month=' + month;
   }
 
   return axios

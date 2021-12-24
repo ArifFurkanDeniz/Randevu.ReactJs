@@ -45,6 +45,7 @@ import CIcon from '@coreui/icons-react'
 // import UsersData from './UsersData'
 import UserService from '../../services/user.service'
 import UserEdit from '../../views/users/UserEdit.js'
+import UserStatisticEdit from '../../views/users/UserStatisticEdit'
 import UserPassword from '../../views/users/UserPassword'
 
 const fields = ['Ad Soyad','Email','Ünvan','Rol','id']
@@ -148,6 +149,13 @@ const Users = () => {
     setshowPassword(showEdit);
   }
 
+
+  const [showStatistic, setshowStatistic] = useState(false)
+  const onClickStatistic = (showEdit,id) =>{
+    setEditId(id);
+    setshowStatistic(showEdit);
+  }
+
   const [showDelete, setShowDelete] = useState(false)
   const onClickDelete = (showDelete,id) =>{
     setEditId(id);
@@ -242,6 +250,7 @@ const Users = () => {
                        <CButtonGroup>
                         <CButton color="secondary" onClick={() => onClickEdit(!showEdit,item.id)}>Düzenle</CButton>
                         <CButton color="secondary" onClick={() => onClickPassword(!showEdit,item.id)}>Şifre Değiştir</CButton>
+                        <CButton color="secondary" onClick={() => onClickStatistic(!showStatistic,item.id)}>İstatistik</CButton>
                         <CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>
                       </CButtonGroup>
                       {/* <CCol col="3" sm="4" md="2" xl className="mb-1 mb-xl-0">
@@ -281,6 +290,24 @@ const Users = () => {
           <CButton color="secondary" onClick={() => setshowEdit(!showEdit)}>Kapat</CButton>
         </CModalFooter> */}
       </CModal>     
+
+      <CModal 
+        show={showStatistic} 
+        onClose={() => {setshowStatistic(!showStatistic);}}
+        size="xl"
+      >
+        <CModalHeader closeButton>
+          <CModalTitle>İstatistik</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+        {showStatistic ? <UserStatisticEdit id={editId}></UserStatisticEdit>:<div></div>}
+      
+        </CModalBody>
+        {/* <CModalFooter>
+          <CButton color="secondary" onClick={() => setshowEdit(!showEdit)}>Kapat</CButton>
+        </CModalFooter> */}
+      </CModal>     
+
       <CModal 
         show={showPassword} 
         onClose={() => {setshowPassword(!showPassword); }}

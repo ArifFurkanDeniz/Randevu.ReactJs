@@ -45,12 +45,13 @@ import CIcon from '@coreui/icons-react'
 // import ClientsData from './ClientsData'
 import ClientService from '../../services/client.service'
 import ClientEdit from '../../views/clients/ClientEdit.js'
+import ClientDocuments from '../../views/clients/ClientDocuments.js'
 
 //const fields = ['fullName','email','phone1','genderType','id']
-const fields = ['No','Ad Soyad','Email','Telefon','Cinsiyet','id']
+const fields = ['No','Ad_Soyad','Email','Telefon','Cinsiyet','id']
 
 
-
+const user = JSON.parse(localStorage.getItem('user'));
 const Clients = () => {
 
   const [page, setPage] = useState(1)
@@ -77,14 +78,14 @@ const Clients = () => {
 
    const sendApi = () =>{
 
-    ClientService.getClients(page, fullName, year).then(
+    ClientService.getClients(page, fullName, year, month).then(
       (result) => {
         setTotalPage(result.data.totalPage);
         setTotalItem(result.data.totalItem);
         let newClients = [];
         result.data.data.forEach(element => {
           newClients.push({
-            "Ad Soyad":element.fullName,
+            "Ad_Soyad":element.fullName,
             "Email" : element.email,
             "Telefon" : element.phone1,
             "Cinsiyet" : element.genderType,
@@ -123,11 +124,16 @@ const Clients = () => {
   const [fullName, setFullName] = useState(null);
   const [year, setYear] = useState(null);
 
+  const [month, setMonth] = useState(null);
+
   const fullNameChanged = (value) => {
     setFullName(value)
   }
   const yearChanged = (value) => {
     setYear(value)
+  }
+  const monthChanged = (value) => {
+    setMonth(value)
   }
 
   const send = () => {
@@ -146,6 +152,13 @@ const Clients = () => {
 
     setEditId(id);
     setshowEdit(showEdit);
+  }
+
+  const [documentsId, setDocumentsId] = useState(null)
+  const [showDocuments, setShowDocuments] = useState(false)
+  const onClickDocuments = (showDocuments,id) =>{
+    setDocumentsId(id);
+    setShowDocuments(showDocuments);
   }
 
   const [showDelete, setShowDelete] = useState(false)
@@ -205,6 +218,16 @@ const Clients = () => {
                     {/* <CFormText>This is a help text</CFormText> */}
                   </CCol>
                 </CFormGroup>
+                <CFormGroup row>
+              
+                  <CCol md="2">
+                    <CLabel htmlFor="text-input">Ay</CLabel>
+                  </CCol>
+                  <CCol xs="12" md="4">
+                    <CInput id="text-input" name="text-input"  onChange={(e) => monthChanged(e.target.value)} value={month} />
+                    {/* <CFormText>This is a help text</CFormText> */}
+                  </CCol>
+                </CFormGroup>
             
               </CForm>
             </CCardBody>
@@ -240,12 +263,16 @@ const Clients = () => {
                       {item.Cinsiyet == 1?"Erkek":item.Cinsiyet == 2?"Kadın":item.Cinsiyet == 3?"Çift":"Seçilmedi"}
                   </td>
                 ),
+           
                 'id':
                 (item) => (
                   <td>
                      <CButtonGroup>
-                      <CButton color="secondary" onClick={() => onClickEdit(!showEdit, item.id)}>Düzenle</CButton>
-                      <CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>
+                     { (user.data.userData.role[0] =="Admin") && 
+                      <CButton color="secondary" onClick={() => onClickEdit(!showEdit, item.id)}>Düzenle</CButton>}
+                      <CButton color="secondary" onClick={() => onClickDocuments(!showDocuments, item.Ad_Soyad + "-" + item.id)}>Dosyalar</CButton>
+                      { (user.data.userData.role[0] =="Admin") && 
+                      <CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>}
                     </CButtonGroup>
                   </td>
                 ),
@@ -261,7 +288,23 @@ const Clients = () => {
             </CCardBody>
           </CCard>
         </CCol>
-    </CRow>   
+    </CRow>  
+    <CModal 
+        show={showDocuments} 
+        onClose={() => {setShowDocuments(!showDocuments);}}
+        size="xl"
+      >
+        <CModalHeader closeButton>
+          <CModalTitle>{"Dosyalar"}</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+        {showDocuments ? <ClientDocuments id={documentsId}> </ClientDocuments>:<div></div>}
+      
+        </CModalBody>
+        {/* <CModalFooter>
+          <CButton color="secondary" onClick={() => setshowEdit(!showEdit)}>Kapat</CButton>
+        </CModalFooter> */}
+      </CModal>    
     <CModal 
         show={showEdit} 
         onClose={() => {setshowEdit(!showEdit); sendApi();}}

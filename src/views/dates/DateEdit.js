@@ -50,16 +50,19 @@ import UserService from '../../services/user.service'
 import ClientEdit from '../../views/clients/ClientEdit.js'
 import ComingCaseService from '../../services/comingCase.service'
 
+const user = JSON.parse(localStorage.getItem('user'));
 
 // const { page } = useParams();
 
 const DateEdit = (data) => {
 
+    // const [isFree, setIsFree] = useState(false);
     const [usersData, setUsersData] = useState([]);
     const [clientsData, setClientsData] = useState([]);
     const [roomsData, setRoomsData] = useState([]);
     const [comingCasesData, setComingCasesData] = useState([]);
     const [showModal, setShowModal] = useState(false)
+    const [showControlModal, setShowControlModal] = useState(false)
     const [date, setDate] = useState({
       dateTime: null,
       clientId: 0,
@@ -71,10 +74,17 @@ const DateEdit = (data) => {
       costUser: 0,
       costCase: 0,
       costStatus: 0,
+      isFree: user.data.userData.role[0] =="Uzman"?true:false
      });
 
   useEffect(() => {
 
+
+    // if (user.data.userData.role[0] =="Admin") 
+    // {
+    //   date.isFree = true;
+    //   setDate(date);
+    // }
     UserService.getUsers().then(
       (result) => {
      
@@ -158,8 +168,9 @@ const DateEdit = (data) => {
   }, []);
 
 
+
   const changeHandler = e => {
-    debugger;
+
     let data= e.target.value; 
     if (e.target.value == "") {
       data = null;
@@ -167,9 +178,58 @@ const DateEdit = (data) => {
     setDate({...date, [e.target.name]: data})
  }
 
- 
+ const saveDate = () =>{
 
-  const send = () => {
+  let newDate = {
+    dateTime: null,
+    clientId: 0,
+    user1Id: null,
+    user2Id: null,
+    roomId: null,
+    comingCaseId: null,
+    directional: null,
+    costUser: 0,
+    costCase: 0,
+    costStatus: 0,
+    isFree: false
+  }
+
+  newDate.id = date.id;
+  newDate.dateTime = date.dateTime + 'T'+ date.dateHour + ':00';
+  newDate.clientId = date.clientId;
+  newDate.user1Id = date.user1Id;
+  newDate.user2Id = date.user2Id;
+  newDate.roomId = date.roomId;
+  newDate.directional = date.directional;
+  newDate.costUser = date.costUser;
+  newDate.costCase = date.costCase;
+  newDate.costStatus = date.costStatus;
+  newDate.description = date.description;
+  newDate.comingCaseId = date.comingCaseId;
+  debugger;
+  newDate.isFree = (date.isFree=="true" || date.isFree)?true:false;
+  if (newDate.isFree) {
+    newDate.clientId = null;
+  }
+
+  DateService.save(newDate).then(
+    (result2) => {
+        setShowControlModal(false);
+        setShowModal(true);
+    },
+    (error) => {
+
+      const resMessage =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+    }
+  );
+ }
+
+  const send = (status) => {
 
 
     let newDate = {
@@ -183,11 +243,14 @@ const DateEdit = (data) => {
       costUser: 0,
       costCase: 0,
       costStatus: 0,
+      isFree: false
     }
 
-    newDate.id = date.id;
+    if (status=0) {
+      newDate.id = date.id;
+    }
+ 
     newDate.dateTime = date.dateTime + 'T'+ date.dateHour + ':00';
-    debugger;
     newDate.clientId = date.clientId;
     newDate.user1Id = date.user1Id;
     newDate.user2Id = date.user2Id;
@@ -198,24 +261,54 @@ const DateEdit = (data) => {
     newDate.costStatus = date.costStatus;
     newDate.description = date.description;
     newDate.comingCaseId = date.comingCaseId;
+    newDate.isFree = (date.isFree=="true" || date.isFree)?true:false;
+    debugger;
+    if (newDate.isFree) {
+      newDate.clientId = null;
+    }
+    
 
-    DateService.save(newDate).then(
-        (result) => {
-            setShowModal(true);
-        },
-        (error) => {
-    
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-    
-          // setLoading(false);
-          // setMessage(resMessage);
-        }
-      );
+
+
+    DateService.dateControl(newDate.id, newDate.roomId, newDate.dateTime).then(
+      (result) => {
+       
+         if (result.data.status == true) {
+          DateService.save(newDate).then(
+            (result2) => {
+                setShowModal(true);
+            },
+            (error) => {
+        
+              const resMessage =
+                (error.response &&
+                  error.response.data &&
+                  error.response.data.message) ||
+                error.message ||
+                error.toString();
+            }
+          );
+         }
+         else
+         {
+          setShowControlModal(true);
+         }
+      },
+      (error) => {
+  
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+  
+        // setLoading(false);
+        // setMessage(resMessage);
+      }
+    );
+
+   
   }
 
   const getClients = () =>{
@@ -245,6 +338,7 @@ const DateEdit = (data) => {
     setEditId(id);
     setshowEdit(showEdit);
   }
+
 //   const clear = () => {
 
 //   }
@@ -260,6 +354,20 @@ const DateEdit = (data) => {
             <CCardBody>
               <CForm action="" method="post" encType="multipart/form-data" className="form-horizontal">
                 <CFormGroup row>
+                <CCol md="2">
+                  <span> İzin</span>
+                </CCol>
+                <CCol md="4">
+                  
+                 { date.isFree && <input type="radio" name="isFree" id="flexCheckDefault" checked value={true} onChange={(e) => changeHandler(e)}/>}
+                 { !date.isFree && <input type="radio" name="isFree" id="flexCheckDefault"  value={true} onChange={(e) => changeHandler(e)}/>}
+                  </CCol>
+                  <CCol md="2">
+                  {/* <span> İzin</span>
+                <input type="checkbox" id="flexCheckDefault"/> */}
+                </CCol>
+                <CCol md="4">
+                  </CCol>
                   <CCol md="2">
                     <CLabel htmlFor="text-input">Tarih</CLabel>
                   </CCol>
@@ -301,6 +409,7 @@ const DateEdit = (data) => {
                    </CCol>
                 </CFormGroup>
                 <CFormGroup row>
+                {!date.isFree && <>
                   <CCol md="2">
                     <CLabel htmlFor="text-input">Danışan</CLabel>
                   </CCol>
@@ -318,13 +427,17 @@ const DateEdit = (data) => {
                   </CSelect>
                 
                    </CCol>
+            
                    <CCol  xs="12" md="1">
                    <CButtonGroup>
                       <CButton color="success" onClick={() => onClickEdit(!showEdit,0)}  >+</CButton>
                       <CButton color="secondary" onClick={() => onClickEdit(!showEdit, date.clientId)}>...</CButton>
                     </CButtonGroup>
                    </CCol>
-                   <CCol md="2">
+
+                   </>}
+                   {!date.isFree && <>
+                    <CCol md="2">
                     <CLabel htmlFor="text-input">Oda</CLabel>
                   </CCol>
                   <CCol xs="12" md="4">
@@ -340,10 +453,13 @@ const DateEdit = (data) => {
                     ))}
                   </CSelect>
                   </CCol>
+                     </>}
+                  
                  
                 </CFormGroup>
                 <CFormGroup row>
-                <CCol md="2">
+                  {user.data.userData.role[0] =="Admin" && <>
+                  <CCol md="2">
                     <CLabel htmlFor="text-input">Uzman 1</CLabel>
                   </CCol>
                   <CCol xs="12" md="4">
@@ -352,13 +468,15 @@ const DateEdit = (data) => {
                     {usersData.map(item => (
                       <option
                         key={item.fullName}
-                        value={item.id}
-                      >
+                        value={item.id}>
                         {item.fullName}
                       </option>
                     ))}
                   </CSelect>
-                  </CCol>
+                  </CCol></>
+                  }
+                
+                  {!date.isFree && <>
                   <CCol md="2">
                     <CLabel htmlFor="text-input">Uzman 2</CLabel>
                   </CCol>
@@ -375,8 +493,9 @@ const DateEdit = (data) => {
                     ))}
                   </CSelect>
                   </CCol>
-   
+                  </>}
                 </CFormGroup>
+                {!date.isFree && <>
                 <CFormGroup row>
                
                   <CCol md="2">
@@ -428,8 +547,9 @@ const DateEdit = (data) => {
                   </CSelect>
                   </CCol>
                 
-         
+               
                 </CFormGroup>
+                    </>}
                 <CFormGroup row>
                 <CCol md="2">
                     <CLabel htmlFor="text-input">Açıklama</CLabel>
@@ -442,7 +562,9 @@ const DateEdit = (data) => {
               </CForm>
             </CCardBody>
             <CCardFooter>
-              <CButton type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Kaydet</CButton> 
+              <CButton type="submit" size="sm" color="primary" onClick={() => {send(0);}}><CIcon name="cil-scrubber" /> Kaydet</CButton> 
+              {editId!=0 && editId!=null &&    <CButton type="submit" size="sm" color="success" onClick={() => {send(1);}}><CIcon name="cil-scrubber" /> Yeni Randevu</CButton> }
+           
               {/* <CButton type="reset" size="sm" color="danger"><CIcon name="cil-ban" onClick={() => clear()} /> Temizle</CButton> */}
             </CCardFooter>
           </CCard>
@@ -478,6 +600,22 @@ const DateEdit = (data) => {
         </CModalBody>
 
       </CModal>        
+      <CModal 
+        show={showControlModal} 
+        onClose={() => setShowControlModal(!showControlModal)}
+        size="s"
+      >
+        <CModalHeader closeButton>
+          <CModalTitle>Çakışma Uyarısı</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+            <div>Seçtiğiniz tarihte seçtiğiniz oda doludur. Devam etmek istiyor musunuz?</div>     
+        </CModalBody>
+  <CModalFooter>
+          <CButton color="primary" onClick={() => saveDate()}>Evet</CButton>
+          <CButton color="secondary" onClick={() => setShowControlModal(!showControlModal)}>Hayır</CButton>
+        </CModalFooter> 
+      </CModal> 
      </div>
 
   )

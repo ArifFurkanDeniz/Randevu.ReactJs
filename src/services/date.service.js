@@ -1,7 +1,29 @@
 import axios from "axios";
 import authHeader from "./auth-header";
+import getApiRoot from "./api-root";
 
-const API_URL = "https://localhost:44376/api/date/";
+const API_URL = getApiRoot() +"Date/";
+
+
+const dateControl = (id, roomId, dateTime) => {
+
+  if (id == undefined) {
+    id = 0;
+  }
+  let header = authHeader();
+
+  let query ='?Id='+id  +'&DateTime='+ dateTime;
+  if (roomId!=null) {
+    query += '&RoomId='+ roomId
+  }
+ 
+
+  return axios
+  .get(API_URL + 'DateControl'+ query, { headers: header })
+  .then((response) => {
+    return response;
+  });
+}
 
 const deleteDate = (id) => {
   let header = authHeader();
@@ -36,11 +58,11 @@ const getDate = (id) => {
   });
 }
 
-const getDates = (page,date1,date2,user1,user2,client) => {
+const getDates = (page,date1,date2,user1s,user2,client, orderByUser) => {
 
-  if(user1==0)
+  if(user1s.length == 0)
   {
-    user1=null;
+    user1s=null;
   }
 
   if(user2==0)
@@ -58,8 +80,15 @@ const getDates = (page,date1,date2,user1,user2,client) => {
     page =1;
   }
 
+  if (orderByUser==1) {
+    orderByUser = true;
+  }
+  else{
+    orderByUser = false;
+  }
+
   let header = authHeader();
-  let query ='?Page='+page+'&Pagesize=50';
+  let query ='?Page='+page+'&Pagesize=50' + "&orderByUser="+ orderByUser;
 
   if(date1!=null)
   {
@@ -71,9 +100,14 @@ const getDates = (page,date1,date2,user1,user2,client) => {
     query += '&Date2=' + date2;
   }
 
-  if(user1!=null)
+  if(user1s!=null)
   {
-    query += '&User1Id=' + user1;
+    let index = 0;
+    user1s.forEach(element => {
+      query += '&user1Ids['+index+']=' + element;
+      index++;
+    });
+  
   }
 
   if(user2!=null)
@@ -95,6 +129,7 @@ const getDates = (page,date1,date2,user1,user2,client) => {
 
 
 export default {
+  dateControl,
   deleteDate,
   save,
   getDate,

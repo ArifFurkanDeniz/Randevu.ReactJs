@@ -1,1 +1,27 @@
 // Here you can add other styles
+.c-sidebar {
+    color: #fff;
+    background: #11a1d9;
+};
+
+.c-sidebar .c-sidebar-minimizer {
+    background-color: #fff;
+    opacity: 100;
+};
+
+.btn-primary {
+    color: #fff;
+    background-color: #11a1d9;
+    border-color: #11a1d9;
+    opacity: 100;
+}
+
+.list-group-item.active {
+    z-index: 2;
+    color: #fff;
+    background-color: #11a1d9;
+    border-color: #11a1d9;
+    opacity: 100;
+}
+
+

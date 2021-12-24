@@ -1,7 +1,7 @@
 import axios from "axios";
+import getApiRoot from "./api-root";
 
-
-const API_URL = "https://localhost:44376/api/account/";
+const API_URL = getApiRoot() +"Account/";
 
 // const register = (username, email, password) => {
 //   return axios.post(API_URL + "signup", {

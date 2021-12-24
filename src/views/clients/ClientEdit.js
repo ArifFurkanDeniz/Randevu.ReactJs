@@ -205,6 +205,15 @@ const ClientEdit = (data) => {
                     <CInput id="text-input" name="father"  onChange={(e) => changeHandler(e)} value={client.email} />
                   </CCol>
                 </CFormGroup>
+                <CFormGroup row>
+                  <CCol md="2">
+                    <CLabel htmlFor="text-input">Açıklama</CLabel>
+                  </CCol>
+                  <CCol xs="12" md="10">
+                  <textarea name="description" class="form-control" onChange={(e) => changeHandler(e)} value={client.description} />
+                  </CCol>
+                  
+                </CFormGroup>
                 {/* <CFormGroup row>
                   <CCol md="2">
                     <CLabel htmlFor="text-input">Rol</CLabel>
