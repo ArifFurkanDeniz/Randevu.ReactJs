@@ -50,7 +50,7 @@ import DateEdit from '../../views/dates/DateEdit.js'
 
 const user = JSON.parse(localStorage.getItem('user'));
 //const fields = ['dateTime','dateDay','dateHour','client','user1','user2','room','directional','costUser','costCase','id']
-const fields = ['Tarih','Gün','Saat','Danışan','Uzman1','Uzman2','Oda', 'Geliş Nedeni','Yönlendiren',"Toplam Ücret",'Uzman Ücreti','Kasa Ücreti','id']
+const fields = ['Tarih','Gün','Saat','Danışan','Uzman1','Uzman2','Oda', 'Geliş Nedeni','Yönlendiren',"Toplam Ücret",'Uzman Ücreti','Kasa Ücreti','Ödenme Durumu', 'Açıklama','id']
 // const { page } = useParams();
 
 const Dates = () => {
@@ -62,6 +62,19 @@ const Dates = () => {
 
 
   useEffect(() => {
+
+    const listener = event => {
+      if (event.code === "Enter" || event.code === "NumpadEnter") {
+        // console.log("Enter key was pressed. Run your function.");
+        event.preventDefault();
+        document.getElementById("submit").click(); 
+  
+      }
+    };
+    document.addEventListener("keydown", listener);
+    // return () => {
+    //   document.removeEventListener("keydown", listener);
+    // };
 
     if(page>=1)
     {
@@ -147,7 +160,9 @@ const Dates = () => {
             "Kasa Ücreti" : element.costCase,
             "id" : element.id,
             "Toplam Ücret" : element.costCase + element.costUser,
-            "mobilePhone" : element.mobilePhone
+            "mobilePhone" : element.mobilePhone,
+            "Ödenme Durumu" : element.costStatusDesc,
+            "Açıklama" : element.description
  
           });
         });
@@ -215,7 +230,16 @@ const Dates = () => {
     setUser2(value)
   }
 
-  const [date1, setDate1] = useState(null);
+
+  var today2 = new Date();
+
+var dd = String(today2.getDate()).padStart(2, '0');
+var mm = String(today2.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today2.getFullYear();
+
+today2 = yyyy + '-' + mm + '-' + dd ;
+
+  const [date1, setDate1] = useState(today2);
 
   const date1Changed = (value) => {
     setDate1(value)
@@ -256,13 +280,15 @@ const Dates = () => {
   const [editId, setEditId] = useState(null)
   const [showEdit, setshowEdit] = useState(false)
   const onClickEdit = (showEdit,id) =>{
+    debugger;
     setEditId(id);
     setshowEdit(showEdit);
   }
 
 
-  const onClickSendMessage = (fullName, userName, dateTime, mobilePhone,id) =>{
-    let text = "Sevgili "+ fullName + ", "+ dateTime + " tarihinde "+ userName + " ile Q Psikoloji randevunuz oluşturulmuştur.";
+
+  const onClickSendMessage = (fullName, userName, dateTime, hour, mobilePhone,id) =>{
+    let text = "Merhaba, "+ dateTime + " tarihinde "+ hour + "'da "+ userName + " ile olan randevumuza bekliyoruz. Görüşmek üzere.";
     let link = "https://api.whatsapp.com/send?phone=+9"+mobilePhone+"&text="+text;
     window.open(link);
 
@@ -417,7 +443,7 @@ const Dates = () => {
             </CCardBody>
             <CCardFooter>
             <div class="d-flex">
-              <div>  <CButton type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Gönder</CButton> </div>
+              <div>  <CButton id="submit" name="submit" type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Gönder</CButton> </div>
               <div>  <CButton type="submit" size="sm" color="primary" onClick={() => {orderByUserClick();}}><CIcon name="cil-scrubber" /> Uzmana Göre Sırala</CButton> </div>
               <div>  <CButton type="reset" size="sm" color="danger"  onClick={() => clear()} ><CIcon name="cil-ban"/> Temizle</CButton></div>
               <div class="ml-auto"> <CButton type="button" size="sm" color="success"  onClick={() => onClickEdit(!showEdit,0)} ><CIcon name="cil-arrow-right"/> Ekle</CButton></div>
@@ -449,6 +475,7 @@ const Dates = () => {
               // itemsPerPage={2}
               // pagination
               scopedSlots={{
+   
                 'Gün': (item) => (
              
                  <td>
@@ -471,7 +498,7 @@ const Dates = () => {
                   <td>
 
                         <CButtonGroup>
-                          {user.data.userData.role[0] =="Admin"?<CButton color="secondary" onClick={() => onClickSendMessage(item.Danışan, item.Uzman1, item.Tarih, item.mobilePhone, item.id)}>Mesaj Gönder</CButton>:""}
+                          {user.data.userData.role[0] =="Admin"?<CButton color="secondary" onClick={() => onClickSendMessage(item.Danışan, item.Uzman1, item.Tarih, item.Saat, item.mobilePhone, item.id)}>Mesaj Gönder</CButton>:""}
                           {user.data.userData.role[0] =="Admin"?<CButton color="secondary" onClick={() => onClickEdit(!showEdit, item.id)}>Düzenle</CButton>:""}
                           {user.data.userData.role[0] =="Admin"?<CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>:""}
                         </CButtonGroup>

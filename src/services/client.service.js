@@ -37,7 +37,7 @@ const getClient = (id) => {
   });
 }
 
-const getClients = (page, fullName, year, month) => {
+const getClients = (page, fullName, year, month, IsOrderText = false) => {
   
   let pageSize = 20;
   if(page==0)
@@ -56,7 +56,7 @@ const getClients = (page, fullName, year, month) => {
   }
 
   let header = authHeader();
-  let query ='?Page='+page+'&Pagesize='+pageSize;
+  let query ='?Page='+page+'&Pagesize='+pageSize + '&IsOrderText='+IsOrderText;
 
   if(fullName!=null)
   {

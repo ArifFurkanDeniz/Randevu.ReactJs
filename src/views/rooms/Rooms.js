@@ -58,6 +58,16 @@ const Rooms = () => {
 
   useEffect(() => {
 
+    const listener = event => {
+      if (event.code === "Enter" || event.code === "NumpadEnter") {
+        // console.log("Enter key was pressed. Run your function.");
+        event.preventDefault();
+        document.getElementById("submit").click(); 
+  
+      }
+    };
+    document.addEventListener("keydown", listener);
+
     if(page>=1)
     {
       sendApi();
@@ -188,7 +198,7 @@ const Rooms = () => {
               </CForm>
             </CCardBody>
             <CCardFooter>
-              <CButton type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Gönder</CButton> 
+              <CButton id="submit" name="submit" type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Gönder</CButton> 
               <CButton type="reset" size="sm" color="danger" onClick={() => clear()} ><CIcon name="cil-ban" /> Temizle</CButton>
             </CCardFooter>
           </CCard>

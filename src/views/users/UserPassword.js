@@ -83,7 +83,7 @@ const UserPassword = (data) => {
  
 
   const send = () => {
-    UserService.save(user).then(
+    UserService.savePassword(user).then(
         (result) => {
             setShowModal(true);
         },

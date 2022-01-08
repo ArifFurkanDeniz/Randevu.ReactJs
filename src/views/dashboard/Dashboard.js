@@ -167,6 +167,16 @@ const Dashboard = () => {
   const history = useHistory();
   useEffect(() => {
 
+    const listener = event => {
+      if (event.code === "Enter" || event.code === "NumpadEnter") {
+        // console.log("Enter key was pressed. Run your function.");
+        event.preventDefault();
+        document.getElementById("submit").click(); 
+  
+      }
+    };
+    document.addEventListener("keydown", listener);
+
     const user = JSON.parse(localStorage.getItem('user'));
 
     if (user.data.userData.role[0]!="Admin") {
@@ -411,11 +421,28 @@ const Dashboard = () => {
 
 
 var today = new Date();
-var dd = String(today.getDate()-7).padStart(2, '0');
+
+today = addDays(today, -7);
+var dd = String(today.getDate()).padStart(2, '0');
 var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
 var yyyy = today.getFullYear();
 
 today = yyyy + '-' + mm + '-' + dd ;
+
+
+var today2 = new Date();
+
+var dd = String(today2.getDate()).padStart(2, '0');
+var mm = String(today2.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today2.getFullYear();
+
+today2 = yyyy + '-' + mm + '-' + dd ;
+
+function addDays(date, days) {
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
 
 const [date1, setDate1] = useState(today);
 
@@ -424,7 +451,7 @@ const date1Changed = (value) => {
 }
 
 
-const [date2, setDate2] = useState(null);
+const [date2, setDate2] = useState(today2);
 
 const date2Changed = (value) => {
   setDate2(value)
@@ -463,7 +490,7 @@ const clear = () => {
             </CCardBody>
             <CCardFooter>
             <div class="d-flex">
-              <div>  <CButton type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Gönder</CButton> </div>
+              <div>  <CButton id="submit" name="submit" type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Gönder</CButton> </div>
               <div>  <CButton type="reset" size="sm" color="danger"  onClick={() => clear()} ><CIcon name="cil-ban"/> Temizle</CButton></div>
             </div>
             </CCardFooter>

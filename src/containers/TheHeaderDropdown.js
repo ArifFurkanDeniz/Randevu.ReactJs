@@ -51,11 +51,17 @@ const onClickPassword2 = (showEdit) =>{
     >
       <CDropdownToggle className="c-header-nav-link" caret={false}>
         <div className="c-avatar">
-          <CImg
+          {/* <CImg
             src={'avatars/6.jpg'}
             className="c-avatar-img"
             alt="admin@bootstrapmaster.com"
-          />
+          /> */}
+
+<CIcon
+          className="c-sidebar-brand-full"
+          name="logo-negative"
+          height={100}
+        />
         </div>
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">

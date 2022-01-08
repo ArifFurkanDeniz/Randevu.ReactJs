@@ -15,6 +15,19 @@ const deleteUser = (id) => {
   });
 }
 
+const savePassword = (user) => {
+  let header = authHeader();
+
+  user.userRoles = [];
+ 
+
+  return axios
+  .post(API_URL + 'SavePassword', user, { headers: header })
+  .then((response) => {
+    return response;
+  });
+}
+
 const save = (user) => {
   let header = authHeader();
 
@@ -83,6 +96,7 @@ const getUsers = (page, fullName) => {
 export default {
   deleteUser,
   save,
+  savePassword,
   getUser,
   getUsers
 };

@@ -63,7 +63,9 @@ const DateEdit = (data) => {
     const [comingCasesData, setComingCasesData] = useState([]);
     const [showModal, setShowModal] = useState(false)
     const [showControlModal, setShowControlModal] = useState(false)
+    const [dateId, setDateId] = useState(null)
     const [date, setDate] = useState({
+      Id : 0,
       dateTime: null,
       clientId: 0,
       user1Id: null,
@@ -144,12 +146,15 @@ const DateEdit = (data) => {
 
 
     getClients();
- 
+ debugger;
       if(data.id != 0)
+
       DateService.getDate(data.id).then(
         (result) => {
-
+debugger;
             setDate(result.data);
+            setDateId(data.id);
+            debugger;
         },
         (error) => {
       
@@ -231,7 +236,7 @@ const DateEdit = (data) => {
 
   const send = (status) => {
 
-
+debugger;
     let newDate = {
       dateTime: null,
       clientId: 0,
@@ -246,7 +251,7 @@ const DateEdit = (data) => {
       isFree: false
     }
 
-    if (status=0) {
+    if (status==0) {
       newDate.id = date.id;
     }
  
@@ -312,7 +317,7 @@ const DateEdit = (data) => {
   }
 
   const getClients = () =>{
-    ClientService.getClients().then(
+    ClientService.getClients(null, null, null, null,true).then(
       (result) => {
         setClientsData(result.data.data);
       },
@@ -331,10 +336,11 @@ const DateEdit = (data) => {
     );
   }
 
+
   const [editId, setEditId] = useState(null)
   const [showEdit, setshowEdit] = useState(false)
   const onClickEdit = (showEdit,id) =>{
-
+debugger;
     setEditId(id);
     setshowEdit(showEdit);
   }
@@ -525,7 +531,10 @@ const DateEdit = (data) => {
                   <CCol xs="12" md="4">
                   <CSelect custom name="costStatus" id="select" onChange={(e) => changeHandler(e)} value={date.costStatus}>
                  <option value="0">Ödenmedi</option>
-                 <option value="1">Ödendi</option>
+                 <option value="1">Ödendi - Nakit</option>
+                 <option value="2">Ödendi - EFT</option>
+                 <option value="3">Ödendi - EFT (Fatura)</option>
+                 <option value="4">Ödendi - Kredi Kartı</option>
                   </CSelect>
                   </CCol>
                 </CFormGroup>
@@ -563,7 +572,7 @@ const DateEdit = (data) => {
             </CCardBody>
             <CCardFooter>
               <CButton type="submit" size="sm" color="primary" onClick={() => {send(0);}}><CIcon name="cil-scrubber" /> Kaydet</CButton> 
-              {editId!=0 && editId!=null &&    <CButton type="submit" size="sm" color="success" onClick={() => {send(1);}}><CIcon name="cil-scrubber" /> Yeni Randevu</CButton> }
+              {dateId!=0 && dateId!=null &&    <CButton type="submit" size="sm" color="success" onClick={() => {send(1);}}><CIcon name="cil-scrubber" /> Yeni Randevu</CButton> }
            
               {/* <CButton type="reset" size="sm" color="danger"><CIcon name="cil-ban" onClick={() => clear()} /> Temizle</CButton> */}
             </CCardFooter>
