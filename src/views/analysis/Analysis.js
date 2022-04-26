@@ -46,7 +46,7 @@ import CIcon from '@coreui/icons-react'
 
 import DateService from '../../services/date.service'
 import UserService from '../../services/user.service'
-import DateEdit from '../../views/dates/DateEdit.js'
+import AnalysisEdit from '../../views/analysis/AnalysisEdit.js'
 
 const user = JSON.parse(localStorage.getItem('user'));
 //const fields = ['dateTime','dateDay','dateHour','client','user1','user2','room','directional','costUser','costCase','id']
@@ -59,7 +59,7 @@ else if (user.data.userData.role[0] =="Uzman") {
 }
 // const { page } = useParams();
 
-const Dates = () => {
+const Analysis = () => {
 
   const [page, setPage] = useState(1)
 
@@ -198,7 +198,7 @@ const Dates = () => {
   const [totalItem, setTotalItem] = useState(0)
 
   const pageChange = newPage => {
-    currentPage !== newPage && history.push(`/dates?page=${newPage}`)
+    currentPage !== newPage && history.push(`/analysis?page=${newPage}`)
     setPage(newPage)
   }
 
@@ -472,7 +472,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
               <div>  <CButton id="submit" name="submit" type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Gönder</CButton> </div>
              { user.data.userData.role[0] =="Admin" &&   <div><CButton type="submit" size="sm" color="primary" onClick={() => {orderByUserClick();}}><CIcon name="cil-scrubber" /> Uzmana Göre Sırala</CButton></div> } 
               <div>  <CButton type="reset" size="sm" color="danger"  onClick={() => clear()} ><CIcon name="cil-ban"/> Temizle</CButton></div>
-              <div class="ml-auto"> <CButton type="button" size="sm" color="success"  onClick={() => onClickEdit(!showEdit,0)} ><CIcon name="cil-arrow-right"/> Ekle</CButton></div>
+              {/* <div class="ml-auto"> <CButton type="button" size="sm" color="success"  onClick={() => onClickEdit(!showEdit,0)} ><CIcon name="cil-arrow-right"/> Ekle</CButton></div> */}
             </div>
             </CCardFooter>
           </CCard>
@@ -524,9 +524,9 @@ today2 = yyyy + '-' + mm + '-' + dd ;
                   <td>
 
                         <CButtonGroup>
-                          {user.data.userData.role[0] =="Admin"?<CButton color="secondary" onClick={() => onClickSendMessage(item.Danışan, item.Uzman1, item.Tarih, item.Saat, item.mobilePhone, item.id)}>Mesaj Gönder</CButton>:""}
+                          {/* {user.data.userData.role[0] =="Admin"?<CButton color="secondary" onClick={() => onClickSendMessage(item.Danışan, item.Uzman1, item.Tarih, item.Saat, item.mobilePhone, item.id)}>Mesaj Gönder</CButton>:""} */}
                         { !item.isFree && <CButton color="secondary" onClick={() => onClickEdit(!showEdit, item.id)}>{user.data.userData.role[0] =="Admin"?"Düzenle":"Detay"}</CButton>}
-                          {user.data.userData.role[0] =="Admin" || item.isFree ?<CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>:""}
+                          {/* {user.data.userData.role[0] =="Admin" || item.isFree ?<CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>:""} */}
                         </CButtonGroup>
                   </td>
                 
@@ -554,7 +554,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
           <CModalTitle>{editId==0?"Kaydet":"Düzenle"}</CModalTitle>
         </CModalHeader>
         <CModalBody>
-        {showEdit ? <DateEdit id={editId}></DateEdit>:<div></div>}
+        {showEdit ? <AnalysisEdit id={editId}></AnalysisEdit>:<div></div>}
       
         </CModalBody>
         {/* <CModalFooter>
@@ -597,4 +597,4 @@ today2 = yyyy + '-' + mm + '-' + dd ;
   )
 }
 
-export default Dates
+export default Analysis

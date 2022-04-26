@@ -32,6 +32,34 @@ const ProfitDetail = (date1, date2, user) => {
     });
 };
 
+const ProfitTotalDetail = (date1, date2, user) => {
+  
+  let query ="";
+
+  if(date1!=null)
+  {
+    query += 'Date1=' + date1;
+  }
+
+  if(date2!=null)
+  {
+    query += '&Date2=' + date2;
+  }
+
+  if(user!=null && user!=0)
+  {
+    query += '&User1Id=' + user;
+  }
+  
+  let header = authHeader();
+
+  return axios
+    .get(API_URL + 'ProfitTotalDetail?' + query,  { headers: header })
+    .then((response) => {
+      return response;
+    });
+};
+
 const ProfitStatistic = (date1, date2, user) => {
   
   let query ="";
@@ -62,5 +90,6 @@ const ProfitStatistic = (date1, date2, user) => {
 
 export default {
   ProfitStatistic,
-  ProfitDetail
+  ProfitDetail,
+  ProfitTotalDetail
 };

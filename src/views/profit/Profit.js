@@ -80,12 +80,14 @@ const Profit = () => {
   const [TownStatisticName, setTownStatisticName] = useState([]);
   const [usersData, setUsersData] = useState([]);
   const [profitData, setProfitData] = useState([]);
+  const [statusData, setStatusData] = useState([]);
 
   const [costTotal, setCostTotal] = useState([]);
   const [costUser, setCostUser] = useState([]);
+  const [costTest, setCostTest] = useState([]);
 
-  const fields = ['Uzman', 'Uzman Ücreti', 'Kasa Ücreti', 'Toplam Ücret','Id']
-
+  const fields = ['Uzman', 'Uzman Ücreti', 'Test Ücreti', 'Kasa Ücreti', 'Toplam Ücret','Id']
+  const user2 = JSON.parse(localStorage.getItem('user'));
   const history = useHistory();
   useEffect(() => {
 
@@ -117,12 +119,9 @@ const Profit = () => {
       }
     );
 
-    const user = JSON.parse(localStorage.getItem('user'));
 
-    if (user.data.userData.role[0]!="Admin") {
-    
-      history.push("/Dates");
-    }
+
+
     sendApi();
 
   }, []);
@@ -131,25 +130,28 @@ const Profit = () => {
  
     ProfitService.ProfitStatistic(date1, date2, user).then(
       (result) => {
-debugger;
         var newDates = []
         let totalCostUser = 0;
+        let totalCostTest = 0;
         let totalCostCase = 0;
         result.data.forEach(element => {
           totalCostUser += element.costUser;
+          totalCostTest += element.costTest;
           totalCostCase += element.costCase;
           newDates.push(
           {
             "Uzman" : element.userName,
             "Uzman Ücreti" : element.costUser,
+            "Test Ücreti" : element.costTest,
             "Kasa Ücreti" : element.costCase,
             "UserId" : element.userId,
             // "id" : element.id,
-            "Toplam Ücret" : element.costCase + element.costUser
+            "Toplam Ücret" : element.costCase + element.costTest + element.costUser
           });
         });
 
         setCostUser(totalCostUser);
+        setCostTest(totalCostTest);
         setCostTotal(totalCostCase);
    
 
@@ -168,6 +170,36 @@ debugger;
         // setMessage(resMessage);
       }
     );
+
+    ProfitService.ProfitTotalDetail(date1, date2, user).then(
+      (result) => {
+        var costStatuses = []
+
+        result.data.forEach(element => {
+
+          costStatuses.push(
+          {
+            CostStatus : element.costStatus,
+            TotalCost : element.costCase + element.costTest + element.costUser
+          });
+        });
+
+        setStatusData(costStatuses);
+      },
+      (error) => {
+    
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+  
+        // setLoading(false);
+        // setMessage(resMessage);
+      }
+    );
+    
   
   }
 
@@ -255,6 +287,9 @@ const clear = () => {
                     <CInput type="date" id="date-input" name="date-input" placeholder="date" onChange={(e) => date2Changed(e.target.value)} value={date2}/>
                   </CCol>
                 </CFormGroup>     
+            
+
+                { (user2.data.userData.role[0] =="Admin") && 
                 <CFormGroup row>
                   <CCol md="2">
                     <CLabel htmlFor="date-input">Uzman</CLabel>
@@ -272,8 +307,9 @@ const clear = () => {
                     ))}
                   </CSelect>
                   </CCol>
-                 
-                </CFormGroup>     
+                  </CFormGroup> 
+                }
+          
               </CForm>
             </CCardBody>
             <CCardFooter>
@@ -293,8 +329,17 @@ const clear = () => {
             <div class="d-flex">
           
               <div class="ml-auto">Toplam Uzman Ücreti : <strong>{costUser}</strong></div>
+              <div class="ml-auto">Toplam Test Ücreti : <strong>{costTest}</strong></div>
               <div class="ml-auto">Toplam Kasa Ücreti : <strong>{costTotal}</strong></div>
-              <div class="ml-auto">Toplam Ücret : <strong>{costUser + costTotal}</strong></div>
+              <div class="ml-auto">Toplam Ücret : <strong>{costUser  + costTest + costTotal}</strong>
+              <ul>
+              {statusData.map(item => (  
+                <li>  
+                {item.CostStatus} : <strong> {item.TotalCost}  </strong>
+                </li>  
+              ))} 
+              </ul>
+              </div>
               <div  class="ml-auto"></div>
               
             </div>

@@ -278,8 +278,10 @@ const Clients = () => {
                 (item) => (
                   <td>
                      <CButtonGroup>
-                     { (user.data.userData.role[0] =="Admin") && 
-                      <CButton color="secondary" onClick={() => onClickEdit(!showEdit, item.id)}>Düzenle</CButton>}
+                     { 
+                      <CButton color="secondary" onClick={() => onClickEdit(!showEdit, item.id)}>{user.data.userData.role[0] =="Admin"?"Düzenle":"Detay"}</CButton>}
+
+
                       <CButton color="secondary" onClick={() => onClickDocuments(!showDocuments, item.Ad_Soyad + "-" + item.id)}>Dosyalar</CButton>
                       { (user.data.userData.role[0] =="Admin") && 
                       <CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>}

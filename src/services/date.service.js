@@ -5,21 +5,41 @@ import getApiRoot from "./api-root";
 const API_URL = getApiRoot() +"Date/";
 
 
-const dateControl = (id, roomId, dateTime) => {
+const dateUserControl = (id, userId, dateTime, dateHour) => {
 
   if (id == undefined) {
     id = 0;
   }
   let header = authHeader();
 
-  let query ='?Id='+id  +'&DateTime='+ dateTime;
+  let query ='?Id='+id  +'&DateTime='+ dateTime + 'T' + dateHour + ':00';
+
+    query += '&UserId='+ userId
+  
+
+
+  return axios
+  .get(API_URL + 'DateUserControl'+ query, { headers: header })
+  .then((response) => {
+    return response;
+  });
+}
+
+const dateRoomControl = (id, roomId, dateTime, dateHour) => {
+
+  if (id == undefined) {
+    id = 0;
+  }
+  let header = authHeader();
+
+  let query ='?Id='+id  +'&DateTime='+ dateTime+ 'T' + dateHour + ':00';
   if (roomId!=null) {
     query += '&RoomId='+ roomId
   }
  
 
   return axios
-  .get(API_URL + 'DateControl'+ query, { headers: header })
+  .get(API_URL + 'DateRoomControl'+ query, { headers: header })
   .then((response) => {
     return response;
   });
@@ -38,7 +58,7 @@ const deleteDate = (id) => {
 
 const save = (date) => {
   let header = authHeader();
-
+  date.dateTime = date.dateTime+'T'+date.dateHour+":00";
   return axios
   .post(API_URL + 'Save', date, { headers: header })
   .then((response) => {
@@ -58,7 +78,7 @@ const getDate = (id) => {
   });
 }
 
-const getDates = (page,date1,date2,user1s,user2,client, orderByUser) => {
+const getDates = (page,date1,date2,user1s,user2,client, orderByUser, isFree) => {
 
   if(user1s.length == 0)
   {
@@ -88,7 +108,7 @@ const getDates = (page,date1,date2,user1s,user2,client, orderByUser) => {
   }
 
   let header = authHeader();
-  let query ='?Page='+page+'&Pagesize=50' + "&orderByUser="+ orderByUser;
+  let query ='?Page='+page+'&Pagesize=50' + "&orderByUser="+ orderByUser+"&isFree="+isFree;
 
   if(date1!=null)
   {
@@ -129,7 +149,8 @@ const getDates = (page,date1,date2,user1s,user2,client, orderByUser) => {
 
 
 export default {
-  dateControl,
+  dateUserControl,
+  dateRoomControl,
   deleteDate,
   save,
   getDate,

@@ -44,7 +44,7 @@ import CIcon from '@coreui/icons-react'
 
 import ClientService from '../../services/client.service'
 
-
+const user = JSON.parse(localStorage.getItem('user'));
 // const { page } = useParams();
 
 const ClientEdit = (data) => {
@@ -230,7 +230,8 @@ const ClientEdit = (data) => {
               </CForm>
             </CCardBody>
             <CCardFooter>
-              <CButton type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Kaydet</CButton> 
+              {user.data.userData.role[0] =="Admin" &&  <CButton type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Kaydet</CButton> }
+             
               {/* <CButton type="reset" size="sm" color="danger"><CIcon name="cil-ban" onClick={() => clear()} /> Temizle</CButton> */}
             </CCardFooter>
           </CCard>

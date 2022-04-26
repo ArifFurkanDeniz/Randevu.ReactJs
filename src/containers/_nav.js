@@ -15,12 +15,7 @@ if(user.data.userData.role[0] =="Admin")
     }
   });
 
-  data.push(   {
-    _tag: 'CSidebarNavItem',
-    name: 'Kazanç Listesi',
-    to: '/profit',
-    icon: 'cil-chart-pie',
-  });
+
 }
 
 
@@ -28,11 +23,24 @@ if(user.data.userData.role[0] =="Admin")
 //   _tag: 'CSidebarNavTitle',
 //   _children: ['Randevu']
 // });
+data.push(   {
+  _tag: 'CSidebarNavItem',
+  name: 'Kazanç Listesi',
+  to: '/profit',
+  icon: 'cil-chart-pie',
+});
 
 data.push(   {
   _tag: 'CSidebarNavItem',
   name: 'Randevu Listesi',
   to: '/dates',
+  icon: 'cil-puzzle',
+});
+
+data.push(   {
+  _tag: 'CSidebarNavItem',
+  name: 'Analiz',
+  to: '/analysis',
   icon: 'cil-puzzle',
 });
 

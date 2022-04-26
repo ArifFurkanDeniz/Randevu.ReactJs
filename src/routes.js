@@ -40,6 +40,7 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'));
 const Forms = React.lazy(() => import('./views/forms/Forms'));
 const Titles = React.lazy(() => import('./views/titles/Titles'));
 const Dates = React.lazy(() => import('./views/dates/Dates'));
+const Analysis = React.lazy(() => import('./views/analysis/Analysis'));
 const Clients = React.lazy(() => import('./views/clients/Clients'));
 const Rooms = React.lazy(() => import('./views/rooms/Rooms'));
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
@@ -50,6 +51,7 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/profit', name: 'Profit', component: Profit },
   { path: '/dates', name: 'Dates', component: Dates },
+  { path: '/analysis', name: 'Analysis', component: Analysis },
   { path: '/users', name: 'Users', component: Users },
   { path: '/clients', name: 'Clients', component: Clients },
   { path: '/rooms', name: 'Rooms', component: Rooms },

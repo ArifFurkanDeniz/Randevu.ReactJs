@@ -62,7 +62,7 @@ const ProfitEdit = (data) => {
   const [profitData, setProfitData] = useState([]);
 const [costTotal, setCostTotal] = useState([]);
 const [costUser, setCostUser] = useState([]);
-  const fields = ['Danışan', 'Randevu Tarihi', 'Uzman Ücreti', 'Kasa Ücreti', 'Toplam Ücret', 'Ödeme Durumu']
+  const fields = ['Danışan', 'Randevu Tarihi', 'Uzman Ücreti', 'Test Ücreti', 'Kasa Ücreti', 'Toplam Ücret', 'Ödeme Durumu']
 
 
   useEffect(() => {
@@ -70,19 +70,22 @@ const [costUser, setCostUser] = useState([]);
       (result) => {
         var newDates = []
         let totalCostUser = 0;
+        let totalCostTest = 0;
         let totalCostCase = 0;
         result.data.forEach(element => {
           totalCostUser += element.costUser;
+          totalCostTest += element.costTest;
           totalCostCase += element.costCase;
           newDates.push(
           {
             "Danışan" : element.clientName,
             "Randevu Tarihi" : element.dateDate,
             "Uzman Ücreti" : element.costUser,
+            "Test Ücreti" : element.costTest,
             "Kasa Ücreti" : element.costCase,
             "Ödeme Durumu" : element.costStatus,
             // "id" : element.id,
-            "Toplam Ücret" : element.costCase + element.costUser
+            "Toplam Ücret" : element.costCase + element.costTest + element.costUser
           });
         });
 

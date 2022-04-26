@@ -54,7 +54,7 @@ const user = JSON.parse(localStorage.getItem('user'));
 
 // const { page } = useParams();
 
-const DateEdit = (data) => {
+const AnalysisEdit = (data) => {
 
     // const [isFree, setIsFree] = useState(false);
     const [usersData, setUsersData] = useState([]);
@@ -764,4 +764,4 @@ else
   )
 }
 
-export default DateEdit
+export default AnalysisEdit
