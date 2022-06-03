@@ -37,17 +37,19 @@ data.push(   {
   icon: 'cil-puzzle',
 });
 
-data.push(   {
-  _tag: 'CSidebarNavItem',
-  name: 'Analiz',
-  to: '/analysis',
-  icon: 'cil-puzzle',
-});
+
 
 
 
 if(user.data.userData.role[0] =="Admin")
 {
+  data.push(   {
+    _tag: 'CSidebarNavItem',
+    name: 'Analiz',
+    to: '/analysis',
+    icon: 'cil-puzzle',
+  });
+  
   data.push( {
     _tag: 'CSidebarNavItem',
     name: 'Uzman Listesi',

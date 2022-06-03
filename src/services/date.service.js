@@ -1,6 +1,9 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 import getApiRoot from "./api-root";
+import tokenControl from "./axios-401-response-interceptor";
+
+tokenControl();
 
 const API_URL = getApiRoot() +"Date/";
 
@@ -78,7 +81,7 @@ const getDate = (id) => {
   });
 }
 
-const getDates = (page,date1,date2,user1s,user2,client, orderByUser, isFree) => {
+const getDates = (page,date1,date2,user1s,user2,client, orderByUser, isFree, comingCase, costStatus, directional) => {
 
   if(user1s.length == 0)
   {
@@ -90,9 +93,24 @@ const getDates = (page,date1,date2,user1s,user2,client, orderByUser, isFree) => 
     user2=null;
   }
 
+  if(comingCase==0)
+  {
+    comingCase=null;
+  }
+
+  if(costStatus=='')
+  {
+    costStatus=null;
+  }
+
   if(client=='')
   {
     client=null;
+  }
+
+  if(directional=='')
+  {
+    directional=null;
   }
 
   if(page==0)
@@ -135,9 +153,24 @@ const getDates = (page,date1,date2,user1s,user2,client, orderByUser, isFree) => 
     query += '&User2Id=' + user2;
   }
 
+  if(comingCase!=null)
+  {
+    query += '&ComingCase=' + comingCase;
+  }
+
+  if(costStatus!=null)
+  {
+    query += '&CostStatus=' + costStatus;
+  }
+
   if(client!=null)
   {
     query += '&Client=' + client;
+  }
+
+  if(directional!=null)
+  {
+    query += '&Directional=' + directional;
   }
 
   return axios
@@ -148,13 +181,106 @@ const getDates = (page,date1,date2,user1s,user2,client, orderByUser, isFree) => 
 };
 
 
+const getDatesForGroup = (page,date1,date2,user1s,user2,client, isFree, comingCase, costStatus, directional) => {
+
+  if(user1s.length == 0)
+  {
+    user1s=null;
+  }
+
+  if(user2==0)
+  {
+    user2=null;
+  }
+
+  if(comingCase==0)
+  {
+    comingCase=null;
+  }
+
+  if(costStatus=='')
+  {
+    costStatus=null;
+  }
+
+  if(client=='')
+  {
+    client=null;
+  }
+
+  if(directional=='')
+  {
+    directional=null;
+  }
+
+  if(page==0)
+  {
+    page =1;
+  }
+
+  let header = authHeader();
+  let query ='?Page='+page+'&Pagesize=50' + "&isFree="+isFree;
+
+  if(date1!=null)
+  {
+    query += '&Date1=' + date1;
+  }
+
+  if(date2!=null)
+  {
+    query += '&Date2=' + date2;
+  }
+
+  if(user1s!=null)
+  {
+    let index = 0;
+    user1s.forEach(element => {
+      query += '&user1Ids['+index+']=' + element;
+      index++;
+    });
+  
+  }
+
+  if(user2!=null)
+  {
+    query += '&User2Id=' + user2;
+  }
+
+  if(comingCase!=null)
+  {
+    query += '&ComingCase=' + comingCase;
+  }
+
+  if(costStatus!=null)
+  {
+    query += '&CostStatus=' + costStatus;
+  }
+
+  if(client!=null)
+  {
+    query += '&Client=' + client;
+  }
+
+  if(directional!=null)
+  {
+    query += '&Directional=' + directional;
+  }
+
+  return axios
+    .get(API_URL + 'GetListGroup' + query,  { headers: header })
+    .then((response) => {
+      return response;
+    });
+};
+
 export default {
   dateUserControl,
   dateRoomControl,
   deleteDate,
   save,
   getDate,
-  getDates
+  getDates,
+  getDatesForGroup
 };
 
 // const API_URL = "http://localhost:8080/api/test/";

@@ -51,12 +51,15 @@ import DateEdit from '../../views/dates/DateEdit.js'
 const user = JSON.parse(localStorage.getItem('user'));
 //const fields = ['dateTime','dateDay','dateHour','client','user1','user2','room','directional','costUser','costCase','id']
 let fields = [];
+let groupFields = [];
 if (user.data.userData.role[0] =="Admin") {
   fields = ['Tarih','Gün','Saat','Danışan','Uzman1','Anne Adı', 'Baba Adı','Oda', 'Geliş Nedeni','Yönlendiren','Uzman Ücreti', 'Kasa Ücreti', "Toplam Ücret",'Ödenme Durumu', 'Açıklama','id']
 }
 else if (user.data.userData.role[0] =="Uzman") {
   fields = ['Tarih','Gün','Saat','Danışan','Uzman1','Anne Adı', 'Baba Adı','Oda', 'Geliş Nedeni','Yönlendiren','Uzman Ücreti', 'Açıklama','id']
 }
+
+groupFields = ['Danışan','Uzman1','Tekrar Sayısı']
 // const { page } = useParams();
 
 const Dates = () => {
@@ -64,6 +67,7 @@ const Dates = () => {
   const [page, setPage] = useState(1)
 
   const [datesData, setDatesData] = useState([]);
+  const [dateGroupsData, setDateGroupsData] = useState([]);
   const [usersData, setUsersData] = useState([]);
 
 
@@ -115,7 +119,11 @@ const Dates = () => {
       if (user1_4 != null && user1_4 != 0) {
         user1s.push(user1_4);
       }
+
+      if(!isGroup)
       sendApi(orderByUserName);
+      else
+      sendApiForGroup();
     }
    
 
@@ -194,6 +202,54 @@ const Dates = () => {
 
    }
 
+   const sendApiForGroup = () =>{
+
+    var user1s = []
+    if (user1_1 != null && user1_1 != 0) {
+      user1s.push(user1_1);
+    }
+    if (user1_2 != null && user1_2 != 0) {
+      user1s.push(user1_2);
+    }
+    if (user1_3 != null && user1_3 != 0) {
+      user1s.push(user1_3);
+    }
+    if (user1_4 != null && user1_4 != 0) {
+      user1s.push(user1_4);
+    }
+
+    DateService.getDatesForGroup(page,date1,date2,user1s,user2,client, isFree).then(
+      (result) => {
+        setTotalPage(result.data.totalPage);
+        setTotalItem(result.data.totalItem);
+
+        var newDates = []
+        result.data.data.forEach(element => {
+          newDates.push(
+          {
+            "Danışan" : element.client,
+            "Uzman1" : element.user,
+            "Tekrar Sayısı" : element.count 
+          });
+        });
+        setDateGroupsData(newDates);
+      },
+      (error) => {
+    
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+  
+        // setLoading(false);
+        // setMessage(resMessage);
+      }
+    );
+
+   }
+
   const [totalPage, setTotalPage] = useState(_totalPage)
   const [totalItem, setTotalItem] = useState(0)
 
@@ -201,6 +257,8 @@ const Dates = () => {
     currentPage !== newPage && history.push(`/dates?page=${newPage}`)
     setPage(newPage)
   }
+
+  
 
 
   const [client, setClient] = useState(null);
@@ -270,16 +328,26 @@ today2 = yyyy + '-' + mm + '-' + dd ;
   }
 
   const [orderByUserName, setOrderByUserName] = useState(false)
+  const [isGroup, setIsGroup] = useState(false)
+
   const send = () => {
     setOrderByUserName(false);
+    setIsGroup(false);
     pageChange(1);
     sendApi(false);
   }
 
   const orderByUserClick = () => {
     setOrderByUserName(true);
+    setIsGroup(false);
     pageChange(1);
     sendApi(true);
+  }
+
+  const groupClick = () => {
+    setIsGroup(true);
+    pageChange(1);
+    sendApiForGroup(true);
   }
 
   const clear = () => {
@@ -471,6 +539,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
             <div class="d-flex">
               <div>  <CButton id="submit" name="submit" type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Gönder</CButton> </div>
              { user.data.userData.role[0] =="Admin" &&   <div><CButton type="submit" size="sm" color="primary" onClick={() => {orderByUserClick();}}><CIcon name="cil-scrubber" /> Uzmana Göre Sırala</CButton></div> } 
+              {/* <div><CButton type="submit" size="sm" color="primary" onClick={() => {groupClick();}}><CIcon name="cil-scrubber" /> Grupla</CButton></div> */}
               <div>  <CButton type="reset" size="sm" color="danger"  onClick={() => clear()} ><CIcon name="cil-ban"/> Temizle</CButton></div>
               <div class="ml-auto"> <CButton type="button" size="sm" color="success"  onClick={() => onClickEdit(!showEdit,0)} ><CIcon name="cil-arrow-right"/> Ekle</CButton></div>
             </div>
@@ -479,7 +548,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
       </CCol>
     </CRow>
     
-      <CRow>
+      { !isGroup && <CRow>
         <CCol>
           <CCard>
             <CCardHeader>
@@ -544,7 +613,41 @@ today2 = yyyy + '-' + mm + '-' + dd ;
             </CCardBody>
           </CCard>
         </CCol>
-    </CRow>     
+    </CRow>     }
+    { isGroup &&  <CRow>
+        <CCol>
+          <CCard>
+            <CCardHeader>
+            <div class="d-flex">
+              <div></div>
+              <div class="ml-auto">Toplam kayıt : <strong>{totalItem}</strong></div>
+            </div>
+     
+            </CCardHeader>
+            <CCardBody>
+            <CDataTable
+           
+              items={dateGroupsData}
+              fields={groupFields}
+              hover
+              striped
+              bordered
+              size="sm"
+              // itemsPerPage={2}
+              // pagination
+            />
+                 
+          <CPagination 
+            activePage={currentPage}
+            pages={totalPage}
+            onActivePageChange={pageChange}
+          />
+        
+          <br></br>
+            </CCardBody>
+          </CCard>
+        </CCol>
+    </CRow> }  
     <CModal 
         show={showEdit} 
         onClose={() => {setshowEdit(!showEdit); sendApi(orderByUserName);}}

@@ -1,6 +1,9 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 import getApiRoot from "./api-root";
+import tokenControl from "./axios-401-response-interceptor";
+
+tokenControl();
 
 const API_URL = getApiRoot() +"Dashboard/";
 

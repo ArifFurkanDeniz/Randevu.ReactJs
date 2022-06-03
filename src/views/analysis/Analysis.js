@@ -47,16 +47,19 @@ import CIcon from '@coreui/icons-react'
 import DateService from '../../services/date.service'
 import UserService from '../../services/user.service'
 import AnalysisEdit from '../../views/analysis/AnalysisEdit.js'
+import ComingCaseService from '../../services/comingCase.service'
 
 const user = JSON.parse(localStorage.getItem('user'));
 //const fields = ['dateTime','dateDay','dateHour','client','user1','user2','room','directional','costUser','costCase','id']
 let fields = [];
+let groupFields = [];
 if (user.data.userData.role[0] =="Admin") {
   fields = ['Tarih','Gün','Saat','Danışan','Uzman1','Anne Adı', 'Baba Adı','Oda', 'Geliş Nedeni','Yönlendiren','Uzman Ücreti', 'Kasa Ücreti', "Toplam Ücret",'Ödenme Durumu', 'Açıklama','id']
 }
 else if (user.data.userData.role[0] =="Uzman") {
   fields = ['Tarih','Gün','Saat','Danışan','Uzman1','Anne Adı', 'Baba Adı','Oda', 'Geliş Nedeni','Yönlendiren','Uzman Ücreti', 'Açıklama','id']
 }
+groupFields = ['Danışan','Uzman1','Tekrar Sayısı']
 // const { page } = useParams();
 
 const Analysis = () => {
@@ -64,7 +67,9 @@ const Analysis = () => {
   const [page, setPage] = useState(1)
 
   const [datesData, setDatesData] = useState([]);
+  const [dateGroupsData, setDateGroupsData] = useState([]);
   const [usersData, setUsersData] = useState([]);
+  const [comingCasesData, setComingCasesData] = useState([]);
 
 
   useEffect(() => {
@@ -84,6 +89,24 @@ const Analysis = () => {
 
     if(page>=1)
     {
+      ComingCaseService.getComingCases().then(
+        (result) => {
+          setComingCasesData(result.data);
+        },
+        (error) => {
+      
+          // const resMessage =
+          //   (error.response &&
+          //     error.response.data &&
+          //     error.response.data.message) ||
+          //   error.message ||
+          //   error.toString();
+    
+          // setLoading(false);
+          // setMessage(resMessage);
+        }
+      );
+
       UserService.getUsers().then(
         (result) => {
           setUsersData(result.data.data);
@@ -115,7 +138,10 @@ const Analysis = () => {
       if (user1_4 != null && user1_4 != 0) {
         user1s.push(user1_4);
       }
+      if(!isGroup)
       sendApi(orderByUserName);
+      else
+      sendApiForGroup();
     }
    
 
@@ -144,7 +170,7 @@ const Analysis = () => {
       user1s.push(user1_4);
     }
 
-    DateService.getDates(page,date1,date2,user1s,user2,client, orderByUser, isFree).then(
+    DateService.getDates(page,date1,date2,user1s,user2,client, orderByUser, isFree, comingCase, costStatus, directional).then(
       (result) => {
         setTotalPage(result.data.totalPage);
         setTotalItem(result.data.totalItem);
@@ -194,6 +220,54 @@ const Analysis = () => {
 
    }
 
+   const sendApiForGroup = () =>{
+
+    var user1s = []
+    if (user1_1 != null && user1_1 != 0) {
+      user1s.push(user1_1);
+    }
+    if (user1_2 != null && user1_2 != 0) {
+      user1s.push(user1_2);
+    }
+    if (user1_3 != null && user1_3 != 0) {
+      user1s.push(user1_3);
+    }
+    if (user1_4 != null && user1_4 != 0) {
+      user1s.push(user1_4);
+    }
+
+    DateService.getDatesForGroup(page,date1,date2,user1s,user2,client, isFree).then(
+      (result) => {
+        setTotalPage(result.data.totalPage);
+        setTotalItem(result.data.totalItem);
+
+        var newDates = []
+        result.data.data.forEach(element => {
+          newDates.push(
+          {
+            "Danışan" : element.client,
+            "Uzman1" : element.user,
+            "Tekrar Sayısı" : element.count 
+          });
+        });
+        setDateGroupsData(newDates);
+      },
+      (error) => {
+    
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+  
+        // setLoading(false);
+        // setMessage(resMessage);
+      }
+    );
+
+   }
+
   const [totalPage, setTotalPage] = useState(_totalPage)
   const [totalItem, setTotalItem] = useState(0)
 
@@ -204,14 +278,17 @@ const Analysis = () => {
 
 
   const [client, setClient] = useState(null);
-
   const clientNameChanged = (value) => {
     setClient(value)
   }
 
+  const [directional, setDirectional] = useState(null);
+  const directionalChanged = (value) => {
+    setDirectional(value)
+  }
+
 
   const [isFree, setIsFree] = useState(true);
-
   const isFreeChanged = (value) => {
     setIsFree(!isFree)
   }
@@ -248,6 +325,16 @@ const Analysis = () => {
     setUser2(value)
   }
 
+  const [comingCase, setComingCase] = useState(null);
+  const comingCasesChanged = (value) => {
+    setComingCase(value)
+  }
+
+  const [costStatus, setCostStatus] = useState(null);
+  const costStatusChanged = (value) => {
+    setCostStatus(value)
+  }
+
 
   var today2 = new Date();
 
@@ -270,16 +357,26 @@ today2 = yyyy + '-' + mm + '-' + dd ;
   }
 
   const [orderByUserName, setOrderByUserName] = useState(false)
+  const [isGroup, setIsGroup] = useState(false)
+
   const send = () => {
     setOrderByUserName(false);
+    setIsGroup(false);
     pageChange(1);
     sendApi(false);
   }
 
   const orderByUserClick = () => {
     setOrderByUserName(true);
+    setIsGroup(false);
     pageChange(1);
     sendApi(true);
+  }
+
+  const groupClick = () => {
+    setIsGroup(true);
+    pageChange(1);
+    sendApiForGroup(true);
   }
 
   const clear = () => {
@@ -448,6 +545,37 @@ today2 = yyyy + '-' + mm + '-' + dd ;
                   </CCol>
                 </CFormGroup>
                 <CFormGroup row>
+                <CCol md="2">
+                    <CLabel htmlFor="text-input">Geliş Nedenleri</CLabel>
+                  </CCol>
+                  <CCol xs="12" md="4">
+                  <CSelect custom name="select" id="select" onChange={(e) => comingCasesChanged(e.target.value)} value={comingCase}>
+                  <option value="0">Seçiniz</option>
+                    {comingCasesData.map(item => (
+                        <option
+                        key={item.title}
+                        value={item.id}
+                      >
+                        {item.title}
+                      </option>
+                    ))}
+                  </CSelect>
+                  </CCol>
+                  <CCol md="2">
+                    <CLabel htmlFor="text-input">Ödeme Durumu</CLabel>
+                  </CCol>
+                  <CCol xs="12" md="4">
+                  <CSelect custom name="costStatus" id="costStatus" onChange={(e) => costStatusChanged(e.target.value)} value={costStatus}>
+                 <option value="">Seçiniz</option>
+                 <option value="0">Ödenmedi</option>
+                 <option value="1">Ödendi - Nakit</option>
+                 <option value="2">Ödendi - EFT</option>
+                 <option value="3">Ödendi - EFT (Fatura)</option>
+                 <option value="4">Ödendi - Kredi Kartı</option>
+                  </CSelect>
+                  </CCol>
+                </CFormGroup>
+                <CFormGroup row>
                   <CCol md="2">
                     <CLabel htmlFor="text-input">Danışan</CLabel>
                   </CCol>
@@ -456,6 +584,15 @@ today2 = yyyy + '-' + mm + '-' + dd ;
                     {/* <CFormText>This is a help text</CFormText> */}
                   </CCol>
                   <CCol md="2">
+                    <CLabel htmlFor="text-input">Yönlendiren</CLabel>
+                  </CCol>
+                  <CCol xs="12" md="4">
+                    <CInput id="text-input" name="text-input"  onChange={(e) => directionalChanged(e.target.value)} value={directional} />
+                    {/* <CFormText>This is a help text</CFormText> */}
+                  </CCol>
+                </CFormGroup>
+                <CFormGroup row>
+                <CCol md="2">
                     <CLabel htmlFor="text-input">İzinleri Gizle</CLabel>
                   </CCol>
                   <CCol xs="12" md="4">
@@ -464,13 +601,13 @@ today2 = yyyy + '-' + mm + '-' + dd ;
             
                   </CCol>
                 </CFormGroup>
-            
               </CForm>
             </CCardBody>
             <CCardFooter>
             <div class="d-flex">
               <div>  <CButton id="submit" name="submit" type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Gönder</CButton> </div>
              { user.data.userData.role[0] =="Admin" &&   <div><CButton type="submit" size="sm" color="primary" onClick={() => {orderByUserClick();}}><CIcon name="cil-scrubber" /> Uzmana Göre Sırala</CButton></div> } 
+             <div><CButton type="submit" size="sm" color="primary" onClick={() => {groupClick();}}><CIcon name="cil-scrubber" /> Grupla</CButton></div>
               <div>  <CButton type="reset" size="sm" color="danger"  onClick={() => clear()} ><CIcon name="cil-ban"/> Temizle</CButton></div>
               {/* <div class="ml-auto"> <CButton type="button" size="sm" color="success"  onClick={() => onClickEdit(!showEdit,0)} ><CIcon name="cil-arrow-right"/> Ekle</CButton></div> */}
             </div>
@@ -479,7 +616,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
       </CCol>
     </CRow>
     
-      <CRow>
+    { !isGroup && <CRow>
         <CCol>
           <CCard>
             <CCardHeader>
@@ -544,7 +681,41 @@ today2 = yyyy + '-' + mm + '-' + dd ;
             </CCardBody>
           </CCard>
         </CCol>
-    </CRow>     
+    </CRow>     }
+    { isGroup &&  <CRow>
+        <CCol>
+          <CCard>
+            <CCardHeader>
+            <div class="d-flex">
+              <div></div>
+              <div class="ml-auto">Toplam kayıt : <strong>{totalItem}</strong></div>
+            </div>
+     
+            </CCardHeader>
+            <CCardBody>
+            <CDataTable
+           
+              items={dateGroupsData}
+              fields={groupFields}
+              hover
+              striped
+              bordered
+              size="sm"
+              // itemsPerPage={2}
+              // pagination
+            />
+                 
+          <CPagination 
+            activePage={currentPage}
+            pages={totalPage}
+            onActivePageChange={pageChange}
+          />
+        
+          <br></br>
+            </CCardBody>
+          </CCard>
+        </CCol>
+    </CRow> }  
     <CModal 
         show={showEdit} 
         onClose={() => {setshowEdit(!showEdit); sendApi(orderByUserName);}}
