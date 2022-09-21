@@ -53,6 +53,17 @@ const createFolder = (request) => {
   });
 }
 
+const openFolder = (path) => {
+  let header = authHeader();
+  let query ='?path=' + path;
+
+  return axios
+  .get(API_URL + 'OpenFolder'+ query, { headers: header })
+  .then((response) => {
+    return response;
+  });
+}
+
 const deleteFolder = (name) => {
   let header = authHeader();
   let query ='?Folder=' + name;
@@ -63,6 +74,18 @@ const deleteFolder = (name) => {
     return response;
   });
 }
+
+const downloadAll = (name) => {
+  let header = authHeader();
+  let query ='?filePath=' + name;
+
+  return axios
+  .get(API_URL + 'Download'+ query, { headers: header })
+  .then((response) => {
+    return response;
+  });
+}
+
 
 const upload = (request) => {
   let header = authHeader();
@@ -79,6 +102,8 @@ export default {
   deleteDocument,
   getFolders,
   createFolder,
+  openFolder,
   deleteFolder,
+  downloadAll,
   upload,
 };
