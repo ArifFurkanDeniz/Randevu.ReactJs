@@ -301,6 +301,7 @@ const ClientDocuments = (data) => {
       
 
         <CCardBody >
+       <h2>Klasörler</h2>
         <CFormGroup row>
               {documents.length > 0 && documents.map((element, index) => (  
          //  <div style={{ display: 'block', minWidth: 320, padding:10, float: 'left' }}> 
@@ -310,24 +311,14 @@ const ClientDocuments = (data) => {
            <CListGroupItem  active onClick={() => {onClickOpenFolder(element, index)}} >
            {" " +element.name + " "} 
              </CListGroupItem>
-            
-       
          </CListGroup>
           <br />
-                  
-       
-     
-
           </CCol>
          //  </div>
-          
-       
-         
              ))}  
 
           </CFormGroup>
-          {openedFolder && <h1>{openedFolder.name}</h1>}
-              <br />
+          {openedFolder && <h2>{openedFolder.name}</h2>}
           <CFormGroup row>
           
                   { files && files.map((element2) => (
