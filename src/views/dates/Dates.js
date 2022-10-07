@@ -1,3 +1,4 @@
+import { MultiSelect } from "react-multi-select-component";
 import React, { useState, useEffect } from 'react'
 import { useHistory, useParams, useLocation } from 'react-router-dom'
 import {
@@ -110,15 +111,7 @@ const Dates = () => {
       if (user1_1 != null && user1_1 != 0){
         user1s.push(user1_1);
       }
-      if (user1_2 != null && user1_2 != 0) {
-        user1s.push(user1_2);
-      }
-      if (user1_3 != null && user1_3 != 0){
-        user1s.push(user1_3);
-      }
-      if (user1_4 != null && user1_4 != 0) {
-        user1s.push(user1_4);
-      }
+    
 
       if(!isGroup)
       sendApi(orderByUserName);
@@ -140,19 +133,14 @@ const Dates = () => {
 
     var user1s = []
     if (user1_1 != null && user1_1 != 0) {
-      user1s.push(user1_1);
+      user1s =user1_1;
     }
-    if (user1_2 != null && user1_2 != 0) {
-      user1s.push(user1_2);
-    }
-    if (user1_3 != null && user1_3 != 0) {
-      user1s.push(user1_3);
-    }
-    if (user1_4 != null && user1_4 != 0) {
-      user1s.push(user1_4);
+    var user2s = [];
+    if (user2 != null && user2 != 0) {
+      user2s = user2;
     }
 
-    DateService.getDates(page,date1,date2,user1s,user2,client, orderByUser, isFree).then(
+    DateService.getDates(page,date1,date2,user1s,user2s,client, orderByUser, isFree).then(
       (result) => {
         setTotalPage(result.data.totalPage);
         setTotalItem(result.data.totalItem);
@@ -206,19 +194,14 @@ const Dates = () => {
 
     var user1s = []
     if (user1_1 != null && user1_1 != 0) {
-      user1s.push(user1_1);
+      user1s = user1_1;
     }
-    if (user1_2 != null && user1_2 != 0) {
-      user1s.push(user1_2);
-    }
-    if (user1_3 != null && user1_3 != 0) {
-      user1s.push(user1_3);
-    }
-    if (user1_4 != null && user1_4 != 0) {
-      user1s.push(user1_4);
+    var user2s = [];
+    if (user2 != null && user2 != 0) {
+      user2s = user2;
     }
 
-    DateService.getDatesForGroup(page,date1,date2,user1s,user2,client, isFree).then(
+    DateService.getDatesForGroup(page,date1,date2,user1s,user2s,client, isFree).then(
       (result) => {
         setTotalPage(result.data.totalPage);
         setTotalItem(result.data.totalItem);
@@ -275,32 +258,16 @@ const Dates = () => {
   }
 
 
-  const [user1_1, setUser1_1] = useState(null);
-  const [user1_2, setUser1_2] = useState(null);
-  const [user1_3, setUser1_3] = useState(null);
-  const [user1_4, setUser1_4] = useState(null);
+  const [user1_1, setUser1_1] = useState([]);
 
   const user1_1Changed = (value) => {
 
     setUser1_1(value)
   }
 
-  const user1_2Changed = (value) => {
 
-    setUser1_2(value)
-  }
 
-  const user1_3Changed = (value) => {
-
-    setUser1_3(value)
-  }
-
-  const user1_4Changed = (value) => {
-
-    setUser1_4(value)
-  }
-
-  const [user2, setUser2] = useState(null);
+  const [user2, setUser2] = useState([]);
 
   const user2Changed = (value) => {
     setUser2(value)
@@ -353,11 +320,8 @@ today2 = yyyy + '-' + mm + '-' + dd ;
   const clear = () => {
     setOrderByUserName(false);
     setClient('');
-    setUser1_1(0);
-    setUser1_2(0);
-    setUser1_3(0);
-    setUser1_4(0);
-    setUser2(0);
+    setUser1_1([]);
+    setUser2([]);
     setDate1('');
     setDate2('');
   }
@@ -443,76 +407,30 @@ today2 = yyyy + '-' + mm + '-' + dd ;
                   <CCol md="2">
                     <CLabel htmlFor="text-input">Uzman 1</CLabel>
                   </CCol>
-                  <CCol xs="12" md="1">
-                 <CSelect custom name="select" id="select" onChange={(e) => user1_1Changed(e.target.value)} value={user1_1}>
-                 <option value="0">Seçiniz</option>
-                    {usersData.map(item => (
-                      <option
-                        key={item.fullName}
-                        value={item.id}
-                      >
-                        {item.fullName}
-                      </option>
-                    ))}
-                  </CSelect>
+                  <CCol xs="12" md="4">
+                  <MultiSelect
+                    options={ Array.from(usersData, function (item) {
+                      return { label: item.fullName, value: item.id }
+                  })}
+                    value={user1_1}
+                    onChange={setUser1_1}
+                    labelledBy="Seçiniz"
+                  />
                   </CCol>
-                  <CCol xs="12" md="1">
-                 <CSelect custom name="select" id="select" onChange={(e) => user1_2Changed(e.target.value)} value={user1_2}>
-                 <option value="0">Seçiniz</option>
-                    {usersData.map(item => (
-                      <option
-                        key={item.fullName}
-                        value={item.id}
-                      >
-                        {item.fullName}
-                      </option>
-                    ))}
-                  </CSelect>
-                  </CCol>
-               
-                  <CCol xs="12" md="1">
-                 <CSelect custom name="select" id="select" onChange={(e) => user1_3Changed(e.target.value)} value={user1_3}>
-                 <option value="0">Seçiniz</option>
-                    {usersData.map(item => (
-                      <option
-                        key={item.fullName}
-                        value={item.id}
-                      >
-                        {item.fullName}
-                      </option>
-                    ))}
-                  </CSelect>
-                  </CCol>
-                  <CCol xs="12" md="1">
-                 <CSelect custom name="select" id="select" onChange={(e) => user1_4Changed(e.target.value)} value={user1_4}>
-                 <option value="0">Seçiniz</option>
-                    {usersData.map(item => (
-                      <option
-                        key={item.fullName}
-                        value={item.id}
-                      >
-                        {item.fullName}
-                      </option>
-                    ))}
-                  </CSelect>
-              
-                  </CCol>  </>}
+                   </>}
 
                   <CCol md="2">
                     <CLabel htmlFor="text-input">Uzman 2</CLabel>
                   </CCol>
                   <CCol xs="12" md="4">
-                  <CSelect custom name="select" id="select" onChange={(e) => user2Changed(e.target.value)} value={user2}>
-                  <option value="0">Seçiniz</option>
-                    {usersData.map(item => (
-                      <option
-                        key={item.fullName}
-                        value={item.id}
-                      >
-                        {item.fullName}
-                      </option>
-                    ))}
-                  </CSelect>
+                  <MultiSelect
+                    options={ Array.from(usersData, function (item) {
+                      return { label: item.fullName, value: item.id }
+                  })}
+                    value={user2}
+                    onChange={setUser2}
+                    labelledBy="Seçiniz"
+                  />
                   </CCol>
                 </CFormGroup>
                 <CFormGroup row>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { MultiSelect } from "react-multi-select-component";
 import { useHistory, useParams, useLocation } from 'react-router-dom'
 import {
   CButton,
@@ -71,6 +72,20 @@ const Analysis = () => {
   const [usersData, setUsersData] = useState([]);
   const [comingCasesData, setComingCasesData] = useState([]);
 
+  // <option value="">Seçiniz</option>
+  // <option value="0">Ödenmedi</option>
+  // <option value="1">Ödendi - Nakit</option>
+  // <option value="2">Ödendi - EFT</option>
+  // <option value="3">Ödendi - EFT (Fatura)</option>
+  // <option value="4">Ödendi - Kredi Kartı</option>
+  
+  const costData = [
+    { label: "Ödenmedi", value: "0" },
+    { label: "Ödendi - Nakit", value: "1" },
+    { label: "Ödendi - EFT", value: "2" },
+    { label: "Ödendi - EFT (Fatura)", value: "3" },
+    { label: "Ödendi - Kredi Kartı", value: "4" },
+  ];
 
   useEffect(() => {
 
@@ -124,20 +139,7 @@ const Analysis = () => {
           // setMessage(resMessage);
         }
       );
-  
-      var user1s = []
-      if (user1_1 != null && user1_1 != 0){
-        user1s.push(user1_1);
-      }
-      if (user1_2 != null && user1_2 != 0) {
-        user1s.push(user1_2);
-      }
-      if (user1_3 != null && user1_3 != 0){
-        user1s.push(user1_3);
-      }
-      if (user1_4 != null && user1_4 != 0) {
-        user1s.push(user1_4);
-      }
+
       if(!isGroup)
       sendApi(orderByUserName);
       else
@@ -158,20 +160,25 @@ const Analysis = () => {
 
     var user1s = []
     if (user1_1 != null && user1_1 != 0) {
-      user1s.push(user1_1);
+      user1s = user1_1;
     }
-    if (user1_2 != null && user1_2 != 0) {
-      user1s.push(user1_2);
+    var user2s = [];
+    if (user2 != null && user2 != 0) {
+      user2s = user2;
     }
-    if (user1_3 != null && user1_3 != 0) {
-      user1s.push(user1_3);
+    var costStatuses = [];
+    if (costStatus != null && costStatus != 0) {
+      costStatuses = costStatus;
     }
-    if (user1_4 != null && user1_4 != 0) {
-      user1s.push(user1_4);
+    var comingCases = [];
+    if (comingCase != null && comingCase != 0) {
+      comingCases = comingCase;
     }
 
-    DateService.getDates(page,date1,date2,user1s,user2,client, orderByUser, isFree, comingCase, costStatus, directional).then(
+
+    DateService.getDates(page,date1,date2,user1s,user2s,client, orderByUser, isFree, comingCases, costStatuses, directional).then(
       (result) => {
+       
         setTotalPage(result.data.totalPage);
         setTotalItem(result.data.totalItem);
 
@@ -226,15 +233,15 @@ const Analysis = () => {
     if (user1_1 != null && user1_1 != 0) {
       user1s.push(user1_1);
     }
-    if (user1_2 != null && user1_2 != 0) {
-      user1s.push(user1_2);
-    }
-    if (user1_3 != null && user1_3 != 0) {
-      user1s.push(user1_3);
-    }
-    if (user1_4 != null && user1_4 != 0) {
-      user1s.push(user1_4);
-    }
+    // if (user1_2 != null && user1_2 != 0) {
+    //   user1s.push(user1_2);
+    // }
+    // if (user1_3 != null && user1_3 != 0) {
+    //   user1s.push(user1_3);
+    // }
+    // if (user1_4 != null && user1_4 != 0) {
+    //   user1s.push(user1_4);
+    // }
 
     DateService.getDatesForGroup(page,date1,date2,user1s,user2,client, isFree).then(
       (result) => {
@@ -294,46 +301,10 @@ const Analysis = () => {
   }
 
 
-  const [user1_1, setUser1_1] = useState(null);
-  const [user1_2, setUser1_2] = useState(null);
-  const [user1_3, setUser1_3] = useState(null);
-  const [user1_4, setUser1_4] = useState(null);
-
-  const user1_1Changed = (value) => {
-
-    setUser1_1(value)
-  }
-
-  const user1_2Changed = (value) => {
-
-    setUser1_2(value)
-  }
-
-  const user1_3Changed = (value) => {
-
-    setUser1_3(value)
-  }
-
-  const user1_4Changed = (value) => {
-
-    setUser1_4(value)
-  }
-
-  const [user2, setUser2] = useState(null);
-
-  const user2Changed = (value) => {
-    setUser2(value)
-  }
-
-  const [comingCase, setComingCase] = useState(null);
-  const comingCasesChanged = (value) => {
-    setComingCase(value)
-  }
-
-  const [costStatus, setCostStatus] = useState(null);
-  const costStatusChanged = (value) => {
-    setCostStatus(value)
-  }
+  const [user1_1, setUser1_1] = useState([]);
+  const [user2, setUser2] = useState([]);
+  const [comingCase, setComingCase] = useState([]);
+  const [costStatus, setCostStatus] = useState([]);
 
 
   var today2 = new Date();
@@ -382,11 +353,12 @@ today2 = yyyy + '-' + mm + '-' + dd ;
   const clear = () => {
     setOrderByUserName(false);
     setClient('');
-    setUser1_1(0);
-    setUser1_2(0);
-    setUser1_3(0);
-    setUser1_4(0);
-    setUser2(0);
+
+    setUser1_1([]);
+    setUser2([]);
+    setCostStatus([]);
+    setComingCase([]);
+
     setDate1('');
     setDate2('');
   }
@@ -472,66 +444,29 @@ today2 = yyyy + '-' + mm + '-' + dd ;
                   <CCol md="2">
                     <CLabel htmlFor="text-input">Uzman 1</CLabel>
                   </CCol>
-                  <CCol xs="12" md="1">
-                 <CSelect custom name="select" id="select" onChange={(e) => user1_1Changed(e.target.value)} value={user1_1}>
-                 <option value="0">Seçiniz</option>
-                    {usersData.map(item => (
-                      <option
-                        key={item.fullName}
-                        value={item.id}
-                      >
-                        {item.fullName}
-                      </option>
-                    ))}
-                  </CSelect>
-                  </CCol>
-                  <CCol xs="12" md="1">
-                 <CSelect custom name="select" id="select" onChange={(e) => user1_2Changed(e.target.value)} value={user1_2}>
-                 <option value="0">Seçiniz</option>
-                    {usersData.map(item => (
-                      <option
-                        key={item.fullName}
-                        value={item.id}
-                      >
-                        {item.fullName}
-                      </option>
-                    ))}
-                  </CSelect>
-                  </CCol>
-               
-                  <CCol xs="12" md="1">
-                 <CSelect custom name="select" id="select" onChange={(e) => user1_3Changed(e.target.value)} value={user1_3}>
-                 <option value="0">Seçiniz</option>
-                    {usersData.map(item => (
-                      <option
-                        key={item.fullName}
-                        value={item.id}
-                      >
-                        {item.fullName}
-                      </option>
-                    ))}
-                  </CSelect>
-                  </CCol>
-                  <CCol xs="12" md="1">
-                 <CSelect custom name="select" id="select" onChange={(e) => user1_4Changed(e.target.value)} value={user1_4}>
-                 <option value="0">Seçiniz</option>
-                    {usersData.map(item => (
-                      <option
-                        key={item.fullName}
-                        value={item.id}
-                      >
-                        {item.fullName}
-                      </option>
-                    ))}
-                  </CSelect>
-              
+                  <CCol xs="12" md="4">
+                  <MultiSelect
+                    options={ Array.from(usersData, function (item) {
+                      return { label: item.fullName, value: item.id }
+                  })}
+                    value={user1_1}
+                    onChange={setUser1_1}
+                    labelledBy="Seçiniz"
+                  />
                   </CCol>  </>}
-
                   <CCol md="2">
                     <CLabel htmlFor="text-input">Uzman 2</CLabel>
                   </CCol>
                   <CCol xs="12" md="4">
-                  <CSelect custom name="select" id="select" onChange={(e) => user2Changed(e.target.value)} value={user2}>
+                  <MultiSelect
+                    options={ Array.from(usersData, function (item) {
+                      return { label: item.fullName, value: item.id }
+                  })}
+                    value={user2}
+                    onChange={setUser2}
+                    labelledBy="Seçiniz"
+                  />
+                  {/* <CSelect custom name="select" id="select" onChange={(e) => user2Changed(e.target.value)} value={user2}>
                   <option value="0">Seçiniz</option>
                     {usersData.map(item => (
                       <option
@@ -541,7 +476,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
                         {item.fullName}
                       </option>
                     ))}
-                  </CSelect>
+                  </CSelect> */}
                   </CCol>
                 </CFormGroup>
                 <CFormGroup row>
@@ -549,7 +484,15 @@ today2 = yyyy + '-' + mm + '-' + dd ;
                     <CLabel htmlFor="text-input">Geliş Nedenleri</CLabel>
                   </CCol>
                   <CCol xs="12" md="4">
-                  <CSelect custom name="select" id="select" onChange={(e) => comingCasesChanged(e.target.value)} value={comingCase}>
+                  <MultiSelect
+                    options={ Array.from(comingCasesData, function (item) {
+                      return { label: item.title, value: item.id }
+                  })}
+                    value={comingCase}
+                    onChange={setComingCase}
+                    labelledBy="Seçiniz"
+                  />
+                  {/* <CSelect custom name="select" id="select" onChange={(e) => comingCasesChanged(e.target.value)} value={comingCase}>
                   <option value="0">Seçiniz</option>
                     {comingCasesData.map(item => (
                         <option
@@ -559,20 +502,26 @@ today2 = yyyy + '-' + mm + '-' + dd ;
                         {item.title}
                       </option>
                     ))}
-                  </CSelect>
+                  </CSelect> */}
                   </CCol>
                   <CCol md="2">
                     <CLabel htmlFor="text-input">Ödeme Durumu</CLabel>
                   </CCol>
                   <CCol xs="12" md="4">
-                  <CSelect custom name="costStatus" id="costStatus" onChange={(e) => costStatusChanged(e.target.value)} value={costStatus}>
+                  {/* <CSelect custom name="costStatus" id="costStatus" onChange={(e) => costStatusChanged(e.target.value)} value={costStatus}>
                  <option value="">Seçiniz</option>
                  <option value="0">Ödenmedi</option>
                  <option value="1">Ödendi - Nakit</option>
                  <option value="2">Ödendi - EFT</option>
                  <option value="3">Ödendi - EFT (Fatura)</option>
                  <option value="4">Ödendi - Kredi Kartı</option>
-                  </CSelect>
+                  </CSelect> */}
+                    <MultiSelect
+                    options={costData}
+                    value={costStatus}
+                    onChange={setCostStatus}
+                    labelledBy="Seçiniz"
+                  />
                   </CCol>
                 </CFormGroup>
                 <CFormGroup row>
