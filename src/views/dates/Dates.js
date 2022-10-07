@@ -192,7 +192,7 @@ const Dates = () => {
 
    const sendApiForGroup = () =>{
 
-    var user1s = []
+    var user1s = [];
     if (user1_1 != null && user1_1 != 0) {
       user1s = user1_1;
     }

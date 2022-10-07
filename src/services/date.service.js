@@ -137,12 +137,11 @@ const getDates = (page,date1,date2,user1s,user2,client, orderByUser, isFree, com
   {
     query += '&Date2=' + date2;
   }
-
+  
   if(user1s!=null)
   {
     let index = 0;
     user1s.forEach(element => {
-      debugger;
       query += '&user1Ids['+index+']=' + element.value;
       index++;
     });
@@ -196,7 +195,7 @@ const getDates = (page,date1,date2,user1s,user2,client, orderByUser, isFree, com
 
 
 const getDatesForGroup = (page,date1,date2,user1s,user2,client, isFree, comingCase, costStatus, directional) => {
-
+  debugger;
   if(user1s.length == 0)
   {
     user1s=null;
@@ -249,27 +248,38 @@ const getDatesForGroup = (page,date1,date2,user1s,user2,client, isFree, comingCa
   {
     let index = 0;
     user1s.forEach(element => {
-      query += '&user1Ids['+index+']=' + element;
+      query += '&user1Ids['+index+']=' + element.value;
       index++;
     });
-  
   }
 
   if(user2!=null)
   {
-    query += '&User2Id=' + user2;
+    let index = 0;
+    user2.forEach(element => {
+      query += '&User2Ids['+index+']=' + element.value;
+      index++;
+    });
   }
 
   if(comingCase!=null)
   {
-    query += '&ComingCase=' + comingCase;
+    let index = 0;
+    comingCase.forEach(element => {
+      query += '&ComingCase['+index+']=' + element.value;
+      index++;
+    });
   }
+
 
   if(costStatus!=null)
   {
-    query += '&CostStatus=' + costStatus;
+    let index = 0;
+    costStatus.forEach(element => {
+      query += '&CostStatus['+index+']=' + element.value;
+      index++;
+    });
   }
-
   if(client!=null)
   {
     query += '&Client=' + client;

@@ -1,3 +1,4 @@
+import { MultiSelect } from "react-multi-select-component";
 import React, { useState, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import {
@@ -244,7 +245,7 @@ const date2Changed = (value) => {
   setDate2(value)
 }
 
-const [user, setUser] = useState(null);
+const [user, setUser] = useState([]);
 const userChanged = (value) => {
   setUser(value)
 }
@@ -295,7 +296,7 @@ const clear = () => {
                     <CLabel htmlFor="date-input">Uzman</CLabel>
                   </CCol>
                   <CCol xs="12" md="4">
-                  <CSelect custom name="select" id="select" onChange={(e) => userChanged(e.target.value)} value={user}>
+                  {/* <CSelect custom name="select" id="select" onChange={(e) => userChanged(e.target.value)} value={user}>
                  <option value="0">Seçiniz</option>
                     {usersData.map(item => (
                       <option
@@ -305,7 +306,15 @@ const clear = () => {
                         {item.fullName}
                       </option>
                     ))}
-                  </CSelect>
+                  </CSelect> */}
+                   <MultiSelect
+                    options={ Array.from(usersData, function (item) {
+                      return { label: item.fullName, value: item.id }
+                  })}
+                    value={user}
+                    onChange={setUser}
+                    labelledBy="Seçiniz"
+                  />
                   </CCol>
                   </CFormGroup> 
                 }
@@ -329,8 +338,9 @@ const clear = () => {
             <div class="d-flex">
           
               <div class="ml-auto">Toplam Uzman Ücreti : <strong>{costUser}</strong></div>
-              <div class="ml-auto">Toplam Test Ücreti : <strong>{costTest}</strong></div>
-              <div class="ml-auto">Toplam Kasa Ücreti : <strong>{costTotal}</strong></div>
+              { (user2.data.userData.role[0] =="Admin") &&  <div class="ml-auto">Toplam Test Ücreti : <strong>{costTest}</strong></div>}
+              { (user2.data.userData.role[0] =="Admin") && <div class="ml-auto">Toplam Kasa Ücreti : <strong>{costTotal}</strong></div>}
+              { (user2.data.userData.role[0] =="Admin") &&
               <div class="ml-auto">Toplam Ücret : <strong>{costUser  + costTest + costTotal}</strong>
               <ul>
               {statusData.map(item => (  
@@ -339,7 +349,7 @@ const clear = () => {
                 </li>  
               ))} 
               </ul>
-              </div>
+              </div>}
               <div  class="ml-auto"></div>
               
             </div>

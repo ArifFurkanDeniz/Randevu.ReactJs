@@ -231,17 +231,20 @@ const Analysis = () => {
 
     var user1s = []
     if (user1_1 != null && user1_1 != 0) {
-      user1s.push(user1_1);
+      user1s = user1_1;
     }
-    // if (user1_2 != null && user1_2 != 0) {
-    //   user1s.push(user1_2);
-    // }
-    // if (user1_3 != null && user1_3 != 0) {
-    //   user1s.push(user1_3);
-    // }
-    // if (user1_4 != null && user1_4 != 0) {
-    //   user1s.push(user1_4);
-    // }
+    var user2s = [];
+    if (user2 != null && user2 != 0) {
+      user2s = user2;
+    }
+    var costStatuses = [];
+    if (costStatus != null && costStatus != 0) {
+      costStatuses = costStatus;
+    }
+    var comingCases = [];
+    if (comingCase != null && comingCase != 0) {
+      comingCases = comingCase;
+    }
 
     DateService.getDatesForGroup(page,date1,date2,user1s,user2,client, isFree).then(
       (result) => {

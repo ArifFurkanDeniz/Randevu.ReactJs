@@ -49,9 +49,13 @@ const ProfitTotalDetail = (date1, date2, user) => {
     query += '&Date2=' + date2;
   }
 
-  if(user!=null && user!=0)
+  if(user!=null)
   {
-    query += '&User1Id=' + user;
+    let index = 0;
+    user.forEach(element => {
+      query += '&user1Id['+index+']=' + element.value;
+      index++;
+    });
   }
   
   let header = authHeader();
@@ -77,9 +81,18 @@ const ProfitStatistic = (date1, date2, user) => {
     query += '&Date2=' + date2;
   }
   
-  if(user!=null && user!=0)
+  // if(user!=null && user!=0)
+  // {
+  //   query += '&User1Id=' + user;
+  // }
+
+  if(user!=null)
   {
-    query += '&User1Id=' + user;
+    let index = 0;
+    user.forEach(element => {
+      query += '&user1Id['+index+']=' + element.value;
+      index++;
+    });
   }
 
   let header = authHeader();
