@@ -48,6 +48,7 @@ import CIcon from '@coreui/icons-react'
 import DateService from '../../services/date.service'
 import UserService from '../../services/user.service'
 import DateEdit from '../../views/dates/DateEdit.js'
+import ClientDates from '../../views/clientDates/ClientDate.js'
 
 const user = JSON.parse(localStorage.getItem('user'));
 //const fields = ['dateTime','dateDay','dateHour','client','user1','user2','room','directional','costUser','costCase','id']
@@ -71,9 +72,16 @@ const Dates = () => {
   const [dateGroupsData, setDateGroupsData] = useState([]);
   const [usersData, setUsersData] = useState([]);
 
+  const [clientId, setClientId] = useState(null)
+  const [showClient, setshowClient] = useState(false)
+  const onClickSelectClient = (showClient, value) =>{
+    setClientId(value);
+    setshowClient(showClient);
+  }
 
   useEffect(() => {
 
+    
     const listener = event => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
         // console.log("Enter key was pressed. Run your function.");
@@ -190,6 +198,21 @@ const Dates = () => {
 
    }
 
+   const sendApiForExcel = (orderByUser) =>{
+
+    var user1s = []
+    if (user1_1 != null && user1_1 != 0) {
+      user1s =user1_1;
+    }
+    var user2s = [];
+    if (user2 != null && user2 != 0) {
+      user2s = user2;
+    }
+
+    DateService.getDatesForExcel(page,date1,date2,user1s,user2s,client, orderByUser, isFree);
+
+   }
+
    const sendApiForGroup = () =>{
 
     var user1s = [];
@@ -298,11 +321,18 @@ today2 = yyyy + '-' + mm + '-' + dd ;
   const [isGroup, setIsGroup] = useState(false)
 
   const send = () => {
-    setOrderByUserName(false);
+     setOrderByUserName(false);
     setIsGroup(false);
     pageChange(1);
     sendApi(false);
   }
+
+  const excelExport = () => {
+    setOrderByUserName(false);
+   setIsGroup(false);
+   pageChange(1);
+   sendApiForExcel(false);
+ }
 
   const orderByUserClick = () => {
     setOrderByUserName(true);
@@ -336,6 +366,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
   }
 
 
+ 
 
   const onClickSendMessage = (fullName, userName, dateTime, hour, mobilePhone,id) =>{
     let text = "Merhaba, "+ dateTime + " tarihinde "+ hour + "'da "+ userName + " ile olan randevunuza bekliyoruz. Görüşmek üzere.";
@@ -388,13 +419,13 @@ today2 = yyyy + '-' + mm + '-' + dd ;
                     <CLabel htmlFor="date-input">Başlangıç</CLabel>
                   </CCol>
                   <CCol xs="12" md="4">
-                    <CInput type="date" id="date-input" name="date-input" placeholder="date" onChange={(e) => date1Changed(e.target.value)} value={date1} />
+                    <CInput type="date" id="date-input" name="date-input" placeholder="date" onChange={(e) => date1Changed(e.target.value)} value={date1 || ''} />
                   </CCol>
                   <CCol md="2">
                     <CLabel htmlFor="date-input">Bitiş</CLabel>
                   </CCol>
                   <CCol xs="12" md="4">
-                    <CInput type="date" id="date-input" name="date-input" placeholder="date" onChange={(e) => date2Changed(e.target.value)} value={date2}/>
+                    <CInput type="date" id="date-input" name="date-input" placeholder="date" onChange={(e) => date2Changed(e.target.value)} value={date2 || ''}/>
                   </CCol>
                 </CFormGroup>
                 <CFormGroup row>
@@ -438,7 +469,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
                     <CLabel htmlFor="text-input">Danışan</CLabel>
                   </CCol>
                   <CCol xs="12" md="4">
-                    <CInput id="text-input" name="text-input"  onChange={(e) => clientNameChanged(e.target.value)} value={client} />
+                    <CInput id="text-input" name="text-input"  onChange={(e) => clientNameChanged(e.target.value)} value={client || ''} />
                     {/* <CFormText>This is a help text</CFormText> */}
                   </CCol>
                   <CCol md="2">
@@ -458,6 +489,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
               <div>  <CButton id="submit" name="submit" type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Gönder</CButton> </div>
              { user.data.userData.role[0] =="Admin" &&   <div><CButton type="submit" size="sm" color="primary" onClick={() => {orderByUserClick();}}><CIcon name="cil-scrubber" /> Uzmana Göre Sırala</CButton></div> } 
               {/* <div><CButton type="submit" size="sm" color="primary" onClick={() => {groupClick();}}><CIcon name="cil-scrubber" /> Grupla</CButton></div> */}
+              <div>  <CButton size="sm" color="primary" onClick={() => {excelExport();}}><CIcon name="cil-scrubber" /> Excel'e Aktar</CButton> </div>
               <div>  <CButton type="reset" size="sm" color="danger"  onClick={() => clear()} ><CIcon name="cil-ban"/> Temizle</CButton></div>
               <div class="ml-auto"> <CButton type="button" size="sm" color="success"  onClick={() => onClickEdit(!showEdit,0)} ><CIcon name="cil-arrow-right"/> Ekle</CButton></div>
             </div>
@@ -500,7 +532,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
                 (item) => (
                   <td>
                     
-                    {item.isFree ?<span style={{color: "red"}}>İzin</span>:item.Danışan}
+                    {item.isFree ?<span style={{color: "red"}}>İzin</span>:<span onClick={() => {onClickSelectClient(!showClient, item.Danışan);}}>{item.Danışan}</span>}
                   </td>
                 ),
                       'id':
@@ -566,6 +598,22 @@ today2 = yyyy + '-' + mm + '-' + dd ;
           </CCard>
         </CCol>
     </CRow> }  
+    <CModal 
+        show={showClient} 
+        onClose={() => {setshowClient(!showClient);}}
+        size="xl"
+      >
+        <CModalHeader closeButton>
+          <CModalTitle>{"Danışan Randevuları"}</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+        {showClient ? <ClientDates id={clientId}></ClientDates>:<div></div>}
+      
+        </CModalBody>
+        {/* <CModalFooter>
+          <CButton color="secondary" onClick={() => setshowEdit(!showEdit)}>Kapat</CButton>
+        </CModalFooter> */}
+      </CModal>  
     <CModal 
         show={showEdit} 
         onClose={() => {setshowEdit(!showEdit); sendApi(orderByUserName);}}

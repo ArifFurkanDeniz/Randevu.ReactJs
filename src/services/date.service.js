@@ -81,7 +81,7 @@ const getDate = (id) => {
   });
 }
 
-const getDates = (page,date1,date2,user1s,user2,client, orderByUser, isFree, comingCase, costStatus, directional) => {
+const getDates = (page,date1,date2,user1s,user2,client, orderByUser, isFree, comingCase, costStatus, directional, pagesize = 50) => {
 
   if(user1s.length == 0)
   {
@@ -126,7 +126,7 @@ const getDates = (page,date1,date2,user1s,user2,client, orderByUser, isFree, com
   }
 
   let header = authHeader();
-  let query ='?Page='+page+'&Pagesize=50' + "&orderByUser="+ orderByUser+"&isFree="+isFree;
+  let query ='?Page='+page+'&Pagesize='+ pagesize + "&orderByUser="+ orderByUser+"&isFree="+isFree;
 
   if(date1!=null)
   {
@@ -191,6 +191,139 @@ const getDates = (page,date1,date2,user1s,user2,client, orderByUser, isFree, com
     .then((response) => {
       return response;
     });
+};
+
+
+const getDatesForExcel = (page,date1,date2,user1s,user2,client, orderByUser, isFree, comingCase, costStatus, directional, pagesize = 1000000000) => {
+
+  if(user1s.length == 0)
+  {
+    user1s=null;
+  }
+
+  if(user2==0)
+  {
+    user2=null;
+  }
+
+  if(comingCase==0)
+  {
+    comingCase=null;
+  }
+
+  if(costStatus=='')
+  {
+    costStatus=null;
+  }
+
+  if(client=='')
+  {
+    client=null;
+  }
+
+  if(directional=='')
+  {
+    directional=null;
+  }
+
+  if(page==0)
+  {
+    page =1;
+  }
+
+  if (orderByUser==1) {
+    orderByUser = true;
+  }
+  else{
+    orderByUser = false;
+  }
+
+  let header = authHeader();
+  let query ='?Page='+page+'&Pagesize='+ pagesize + "&orderByUser="+ orderByUser+"&isFree="+isFree;
+
+  if(date1!=null)
+  {
+    query += '&Date1=' + date1;
+  }
+
+  if(date2!=null)
+  {
+    query += '&Date2=' + date2;
+  }
+  
+  if(user1s!=null)
+  {
+    let index = 0;
+    user1s.forEach(element => {
+      query += '&user1Ids['+index+']=' + element.value;
+      index++;
+    });
+  }
+
+  if(user2!=null)
+  {
+    let index = 0;
+    user2.forEach(element => {
+      query += '&User2Ids['+index+']=' + element.value;
+      index++;
+    });
+  }
+
+  if(comingCase!=null)
+  {
+    let index = 0;
+    comingCase.forEach(element => {
+      query += '&ComingCase['+index+']=' + element.value;
+      index++;
+    });
+  }
+
+
+  if(costStatus!=null)
+  {
+    let index = 0;
+    costStatus.forEach(element => {
+      query += '&CostStatus['+index+']=' + element.value;
+      index++;
+    });
+  }
+
+
+  if(client!=null)
+  {
+    query += '&Client=' + client;
+  }
+
+  if(directional!=null)
+  {
+    query += '&Directional=' + directional;
+  }
+
+  // return axios
+  //   .get(API_URL + 'GetListExcel' + query,  { headers: header })
+  //   .then((response) => {
+  //     const url = window.URL.createObjectURL(new Blob([response.data]))
+  //     const link = document.createElement('a')
+  //     link.href = url
+  //     link.setAttribute('download', "Excel.xlsx")
+  //     document.body.appendChild(link)
+  //     link.click()
+  //   });
+
+  //window.open(API_URL + 'GetListExcel' + query, );
+
+
+
+    // Change this to use your HTTP client
+        fetch(API_URL + 'GetListExcel' + query,  { headers: header } ) // FETCH BLOB FROM IT
+          .then((response) => response.blob())
+          .then((blob) => { // RETRIEVE THE BLOB AND CREATE LOCAL URL
+            var _url = window.URL.createObjectURL(blob);
+            window.open(_url, "_blank").focus(); // window.open + focus
+        }).catch((err) => {
+          console.log(err);
+        });
+
 };
 
 
@@ -304,7 +437,8 @@ export default {
   save,
   getDate,
   getDates,
-  getDatesForGroup
+  getDatesForGroup,
+  getDatesForExcel
 };
 
 // const API_URL = "http://localhost:8080/api/test/";

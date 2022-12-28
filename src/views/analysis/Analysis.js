@@ -49,6 +49,7 @@ import DateService from '../../services/date.service'
 import UserService from '../../services/user.service'
 import AnalysisEdit from '../../views/analysis/AnalysisEdit.js'
 import ComingCaseService from '../../services/comingCase.service'
+import ClientDates from '../../views/clientDates/ClientDate.js'
 
 const user = JSON.parse(localStorage.getItem('user'));
 //const fields = ['dateTime','dateDay','dateHour','client','user1','user2','room','directional','costUser','costCase','id']
@@ -227,6 +228,21 @@ const Analysis = () => {
 
    }
 
+   const sendApiForExcel = (orderByUser) =>{
+
+    var user1s = []
+    if (user1_1 != null && user1_1 != 0) {
+      user1s =user1_1;
+    }
+    var user2s = [];
+    if (user2 != null && user2 != 0) {
+      user2s = user2;
+    }
+
+    DateService.getDatesForExcel(page,date1,date2,user1s,user2s,client, orderByUser, isFree);
+
+   }
+
    const sendApiForGroup = () =>{
 
     var user1s = []
@@ -347,6 +363,13 @@ today2 = yyyy + '-' + mm + '-' + dd ;
     sendApi(true);
   }
 
+  const excelExport = () => {
+    setOrderByUserName(false);
+   setIsGroup(false);
+   pageChange(1);
+   sendApiForExcel(false);
+ }
+
   const groupClick = () => {
     setIsGroup(true);
     pageChange(1);
@@ -387,6 +410,13 @@ today2 = yyyy + '-' + mm + '-' + dd ;
   const onClickDelete = (showDelete,id) =>{
     setEditId(id);
     setShowDelete(showDelete);
+  }
+
+  const [clientId, setClientId] = useState(null)
+  const [showClient, setshowClient] = useState(false)
+  const onClickSelectClient = (showClient, value) =>{
+    setClientId(value);
+    setshowClient(showClient);
   }
 
   const [showModal, setShowModal] = useState(false)
@@ -560,6 +590,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
               <div>  <CButton id="submit" name="submit" type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Gönder</CButton> </div>
              { user.data.userData.role[0] =="Admin" &&   <div><CButton type="submit" size="sm" color="primary" onClick={() => {orderByUserClick();}}><CIcon name="cil-scrubber" /> Uzmana Göre Sırala</CButton></div> } 
              <div><CButton type="submit" size="sm" color="primary" onClick={() => {groupClick();}}><CIcon name="cil-scrubber" /> Grupla</CButton></div>
+             <div>  <CButton size="sm" color="primary" onClick={() => {excelExport();}}><CIcon name="cil-scrubber" /> Excel'e Aktar</CButton> </div>
               <div>  <CButton type="reset" size="sm" color="danger"  onClick={() => clear()} ><CIcon name="cil-ban"/> Temizle</CButton></div>
               {/* <div class="ml-auto"> <CButton type="button" size="sm" color="success"  onClick={() => onClickEdit(!showEdit,0)} ><CIcon name="cil-arrow-right"/> Ekle</CButton></div> */}
             </div>
@@ -602,7 +633,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
                 (item) => (
                   <td>
                     
-                    {item.isFree ?<span style={{color: "red"}}>İzin</span>:item.Danışan}
+                    {item.isFree ?<span style={{color: "red"}}>İzin</span>:<span onClick={() => {onClickSelectClient(!showClient, item.Danışan);}}>{item.Danışan}</span>}
                   </td>
                 ),
                       'id':
@@ -668,6 +699,22 @@ today2 = yyyy + '-' + mm + '-' + dd ;
           </CCard>
         </CCol>
     </CRow> }  
+    <CModal 
+        show={showClient} 
+        onClose={() => {setshowClient(!showClient);}}
+        size="xl"
+      >
+        <CModalHeader closeButton>
+          <CModalTitle>{"Danışan Randevuları"}</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+        {showClient ? <ClientDates id={clientId}></ClientDates>:<div></div>}
+      
+        </CModalBody>
+        {/* <CModalFooter>
+          <CButton color="secondary" onClick={() => setshowEdit(!showEdit)}>Kapat</CButton>
+        </CModalFooter> */}
+      </CModal>  
     <CModal 
         show={showEdit} 
         onClose={() => {setshowEdit(!showEdit); sendApi(orderByUserName);}}
