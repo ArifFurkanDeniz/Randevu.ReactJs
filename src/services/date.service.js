@@ -327,16 +327,16 @@ const getDatesForExcel = (page,date1,date2,user1s,user2,client, orderByUser, isF
 };
 
 
-const getDatesForGroup = (page,date1,date2,user1s,user2,client, isFree, comingCase, costStatus, directional) => {
+const getDatesForGroup = (page,date1,date2,user1s,user2s,client, isFree, comingCase, costStatus, directional) => {
   debugger;
   if(user1s.length == 0)
   {
     user1s=null;
   }
 
-  if(user2==0)
+  if(user2s.length == 0)
   {
-    user2=null;
+    user2s=null;
   }
 
   if(comingCase==0)
@@ -386,10 +386,10 @@ const getDatesForGroup = (page,date1,date2,user1s,user2,client, isFree, comingCa
     });
   }
 
-  if(user2!=null)
+  if(user2s!=null)
   {
     let index = 0;
-    user2.forEach(element => {
+    user2s.forEach(element => {
       query += '&User2Ids['+index+']=' + element.value;
       index++;
     });

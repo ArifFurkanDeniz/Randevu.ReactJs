@@ -262,7 +262,7 @@ const Analysis = () => {
       comingCases = comingCase;
     }
 
-    DateService.getDatesForGroup(page,date1,date2,user1s,user2,client, isFree).then(
+    DateService.getDatesForGroup(page,date1,date2,user1s,user2s,client, isFree, comingCases, costStatuses).then(
       (result) => {
         setTotalPage(result.data.totalPage);
         setTotalItem(result.data.totalItem);
@@ -684,6 +684,15 @@ today2 = yyyy + '-' + mm + '-' + dd ;
               striped
               bordered
               size="sm"
+              scopedSlots={{
+                'Danışan':
+                (item) => (
+                  <td>
+                    
+                    {<span onClick={() => {onClickSelectClient(!showClient, item.Danışan);}}>{item.Danışan}</span>}
+                  </td>
+                )
+              }}
               // itemsPerPage={2}
               // pagination
             />

@@ -65,6 +65,7 @@ const DateEdit = (data) => {
     const [showRoomControlModal, setShowRoomControlModal] = useState(false)
     const [showUserControlModal, setShowUserControlModal] = useState(false)
     const [dateId, setDateId] = useState(null)
+    const [percent, setPercent] = useState(null)
     const [date, setDate] = useState({
       Id : 0,
       dateTime: null,
@@ -81,7 +82,8 @@ const DateEdit = (data) => {
       statusId : 0,
       isFree: user.data.userData.role[0] =="Uzman"?true:false,
       dateHour : 0,
-      dateHour2 : 0
+      dateHour2 : 0,
+      categoryId : 0
      });
 
   useEffect(() => {
@@ -177,13 +179,24 @@ const DateEdit = (data) => {
   
   }, []);
 
+  const percentChangeHandler = e => {
 
+    let data= e.target.value; 
+    if (e.target.value != "") {
+      setPercent(data);
+      setDate({...date, ["costUser"]: (date.costCase - date.costTest) * data / 100})
+    }
+    
+ }
 
   const changeHandler = e => {
 
     let data= e.target.value; 
     if (e.target.value == "") {
       data = null;
+    }
+    if (e.target.name == "costCase") {
+      setPercent('');
     }
     setDate({...date, [e.target.name]: data})
  }
@@ -632,6 +645,7 @@ else
                   </CCol>
                   <CCol xs="12" md="2">
                   <CInput id="text-input" name="costCase"  onChange={(e) => changeHandler(e)} value={date.costCase} />
+                  <CInput id="text-input" name="percent" type="number" placeholder='%'  onChange={(e) => percentChangeHandler(e)} value = {percent} />
                   </CCol>
                 </CFormGroup>
                 <CFormGroup row>
@@ -672,7 +686,17 @@ else
                     ))}
                   </CSelect>
                   </CCol>
-                
+                  <CCol md="2">
+                    <CLabel htmlFor="text-input">Kategori</CLabel>
+                  </CCol>
+                  <CCol xs="12" md="4">
+                  <CSelect custom name="categoryId" id="select" onChange={(e) => changeHandler(e)} value={date.categoryId}>
+                 <option value="1">Psikoterapi Çocuk/Ergen</option>
+                 <option value="2">Psikoterapi Yetişkin</option>
+                 <option value="3">Psikoterapi Çift</option>
+                 <option value="4">Özel Eğitim</option>
+                  </CSelect>
+                  </CCol>
                
                 </CFormGroup>
                     </>}
