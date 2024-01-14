@@ -179,18 +179,18 @@ const DateEdit = (data) => {
   
   }, []);
 
-  const percentChangeHandler = e => {
+  const percentChangeHandler = (value) =>{
 
-    let data= e.target.value; 
-    if (e.target.value != "") {
-      setPercent(data);
+    let data= value; 
+    if (data != "") {
+    
       setDate({...date, ["costUser"]: (date.costCase - date.costTest) * data / 100})
     }
     
  }
 
   const changeHandler = e => {
-
+    debugger;
     let data= e.target.value; 
     if (e.target.value == "") {
       data = null;
@@ -198,7 +198,8 @@ const DateEdit = (data) => {
     if (e.target.name == "costCase") {
       setPercent('');
     }
-    setDate({...date, [e.target.name]: data})
+
+    setDate({...date, [e.target.name]: data});
  }
 
  const saveDate = () =>{
@@ -645,7 +646,8 @@ else
                   </CCol>
                   <CCol xs="12" md="2">
                   <CInput id="text-input" name="costCase"  onChange={(e) => changeHandler(e)} value={date.costCase} />
-                  <CInput id="text-input" name="percent" type="number" placeholder='%'  onChange={(e) => percentChangeHandler(e)} value = {percent} />
+                  <CInput id="text-input" name="percent" type="number" placeholder='%'  onChange={(e) => setPercent(e.target.value)} value = {percent} />
+                  <CButton  type="button" size="sm" color="primary" onClick={() => {percentChangeHandler(percent);}}>Uygula</CButton>
                   </CCol>
                 </CFormGroup>
                 <CFormGroup row>
