@@ -398,14 +398,6 @@ today2 = yyyy + '-' + mm + '-' + dd ;
     setshowEdit(showEdit);
   }
 
-
-
-  const onClickSendMessage = (fullName, userName, dateTime, hour, mobilePhone,id) =>{
-    let text = "Merhaba, "+ dateTime + " tarihinde "+ hour + "'da "+ userName + " ile olan randevunuza bekliyoruz. Görüşmek üzere.";
-    let link = "https://api.whatsapp.com/send?phone=+9"+mobilePhone+"&text="+text;
-    window.open(link);
-
-  }
   const [showDelete, setShowDelete] = useState(false)
   const onClickDelete = (showDelete,id) =>{
     setEditId(id);

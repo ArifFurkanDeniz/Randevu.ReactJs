@@ -161,8 +161,10 @@ const ClientDates = (data) => {
     setShowDelete(!showDelete);
   }
 
-  const onClickSendMessage = (fullName, userName, dateTime, hour, mobilePhone,id) =>{
-    let text = "Merhaba, "+ dateTime + " tarihinde "+ hour + "'da "+ userName + " ile olan randevunuza bekliyoruz. Görüşmek üzere.";
+
+
+  const onClickSendMessage = (fullName, userName, dateTime, hour, mobilePhone,id, day) =>{
+    let text = "Değerli Danışanımız, "+ dateTime + " tarihinde "+ day + " günü saat " + hour + "'da uzmanımız "+ userName + " ile olan seansınıza bekleniyorsunuz. Saygılarımızla, Q Psikoloji.";
     let link = "https://api.whatsapp.com/send?phone=+9"+mobilePhone+"&text="+text;
     window.open(link);
 
@@ -224,7 +226,7 @@ const ClientDates = (data) => {
                   <td>
 
                         <CButtonGroup>
-                        {user.data.userData.role[0] =="Admin"?<CButton color="secondary" onClick={() => onClickSendMessage(item.Danışan, item.Uzman1, item.Tarih, item.Saat, item.mobilePhone, item.id)}>Mesaj Gönder</CButton>:""}
+                        {user.data.userData.role[0] =="Admin"?<CButton color="secondary" onClick={() => onClickSendMessage(item.Danışan, item.Uzman1, item.Tarih, item.Saat, item.mobilePhone, item.id,  item.Gün == "Monday"?"Pazartesi":item.Gün == "Tuesday"?"Salı":item.Gün == "Wednesday"?"Çarşamba":item.Gün == "Thursday"?"Perşembe":item.Gün == "Friday"?"Cuma":item.Gün == "Saturday"?"Cumartesi":item.Gün == "Sunday"?"Pazar":"")}>Mesaj Gönder</CButton>:""}
                         { !item.isFree && <CButton color="secondary" onClick={() => onClickEdit(!showEdit, item.id)}>{user.data.userData.role[0] =="Admin"?"Düzenle":"Detay"}</CButton>}
                           {user.data.userData.role[0] =="Admin" || item.isFree ?<CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>:""}
                      </CButtonGroup>

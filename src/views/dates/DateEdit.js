@@ -66,6 +66,7 @@ const DateEdit = (data) => {
     const [showUserControlModal, setShowUserControlModal] = useState(false)
     const [dateId, setDateId] = useState(null)
     const [percent, setPercent] = useState(null)
+    const [totalPrice, setTotalPrice] = useState(null)
     const [date, setDate] = useState({
       Id : 0,
       dateTime: null,
@@ -179,27 +180,36 @@ const DateEdit = (data) => {
   
   }, []);
 
-  const percentChangeHandler = (value) =>{
+  const percentChangeHandler = () =>{
 
-    let data= value; 
-    if (data != "") {
-    
-      setDate({...date, ["costUser"]: (date.costCase - date.costTest) * data / 100})
+    let data= percent; 
+    if (data != null ||data != "") {
+     if(date.costTest == null || date.costTest ==''){
+      date.costTest = 0;
+     }
+     if(totalPrice== null || totalPrice ==''){
+      setTotalPrice(0);
+     }
+     if(date.costUser == null || date.costUser ==''){
+      date.costUser = 0;
+     }
+      setDate({...date, ["costUser"]: parseInt((parseInt(totalPrice) - parseInt(date.costTest)) * data / 100),  ["costCase"] : (parseInt(totalPrice) - (parseInt(date.costTest) +  parseInt((parseInt(totalPrice) - parseInt(date.costTest)) * data / 100)))});
     }
-    
  }
 
   const changeHandler = e => {
-    debugger;
+
     let data= e.target.value; 
     if (e.target.value == "") {
       data = null;
     }
-    if (e.target.name == "costCase") {
+    if (e.target.name == "totalPrice") {
+      setTotalPrice('');
       setPercent('');
     }
 
-    setDate({...date, [e.target.name]: data});
+    
+    setDate({...date, [e.target.name]: data})
  }
 
  const saveDate = () =>{
@@ -646,8 +656,15 @@ else
                   </CCol>
                   <CCol xs="12" md="2">
                   <CInput id="text-input" name="costCase"  onChange={(e) => changeHandler(e)} value={date.costCase} />
+                
+                  </CCol>
+                  <CCol md="2">
+                    <CLabel htmlFor="text-input">Toplam Ücret</CLabel>
+                  </CCol>
+                  <CCol xs="12" md="2">
+                  <CInput id="text-input" name="percent" type="number" placeholder='Toplam Ücret'  onChange={(e) => setTotalPrice(e.target.value)} value = {totalPrice} />
                   <CInput id="text-input" name="percent" type="number" placeholder='%'  onChange={(e) => setPercent(e.target.value)} value = {percent} />
-                  <CButton  type="button" size="sm" color="primary" onClick={() => {percentChangeHandler(percent);}}>Uygula</CButton>
+                  <CButton  type="button" size="sm" color="primary" onClick={() => {percentChangeHandler();}}>Uygula</CButton>
                   </CCol>
                 </CFormGroup>
                 <CFormGroup row>
