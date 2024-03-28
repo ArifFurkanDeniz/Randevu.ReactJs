@@ -84,7 +84,7 @@ const AnalysisEdit = (data) => {
       isFree: user.data.userData.role[0] =="Uzman"?true:false,
       dateHour : 0,
       dateHour2 : 0,
-      categoryId : 0
+      categoryId : 1
      });
 
   useEffect(() => {
