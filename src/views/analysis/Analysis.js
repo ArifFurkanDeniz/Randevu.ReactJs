@@ -202,7 +202,7 @@ const Analysis = () => {
             // "Test Ücreti" : element.costTest,
             "Kasa Ücreti" : element.costCase,
             "id" : element.id,
-            "Toplam Ücret" : element.costCase + element.costUser + element.costTest,
+            "Toplam Ücret" : element.kdv + element.costCase + element.costUser + element.costTest,
             "mobilePhone" : element.mobilePhone,
             "Ödenme Durumu" : element.costStatusDesc,
             "Açıklama" : element.description,

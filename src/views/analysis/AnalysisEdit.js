@@ -78,6 +78,7 @@ const AnalysisEdit = (data) => {
       directional: null,
       costUser: 0,
       costTest:0,
+      kdv:0,
       costCase: 0,
       costStatus: 0,
       statusId : 0,
@@ -188,13 +189,16 @@ const AnalysisEdit = (data) => {
      if(date.costTest == null || date.costTest ==''){
       date.costTest = 0;
      }
+     if(date.kdv == null || date.kdv ==''){
+      date.kdv = 0;
+     }
      if(totalPrice== null || totalPrice ==''){
       setTotalPrice(0);
      }
      if(date.costUser == null || date.costUser ==''){
       date.costUser = 0;
      }
-      setDate({...date, ["costUser"]: parseInt((parseInt(totalPrice) - parseInt(date.costTest)) * data / 100),  ["costCase"] : (parseInt(totalPrice) - (parseInt(date.costTest) +  parseInt((parseInt(totalPrice) - parseInt(date.costTest)) * data / 100)))});
+      setDate({...date, ["costUser"]: parseInt((parseInt(totalPrice) - parseInt(date.costTest) - parseInt(date.kdv)) * data / 100),  ["costCase"] : (parseInt(totalPrice) - (parseInt(date.costTest) + parseInt(date.kdv) +  parseInt((parseInt(totalPrice) - parseInt(date.costTest)  - parseInt(date.kdv)) * data / 100)))});
     }
  }
 
@@ -652,6 +656,12 @@ else
                   </CCol>
                   <CCol xs="12" md="2">
                   <CInput id="text-input" name="costTest"  onChange={(e) => changeHandler(e)} value={date.costTest} />
+                  </CCol>
+                  <CCol md="2">
+                    <CLabel htmlFor="text-input">KDV</CLabel>
+                  </CCol>
+                  <CCol xs="12" md="2">
+                  <CInput id="text-input" name="kdv"  onChange={(e) => changeHandler(e)} value={date.kdv} />
                   </CCol>
                   <CCol md="2">
                     <CLabel htmlFor="text-input">Tutar Kasa</CLabel>
