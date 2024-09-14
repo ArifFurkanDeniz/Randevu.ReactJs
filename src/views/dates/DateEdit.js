@@ -741,7 +741,7 @@ else
               </CForm>
             </CCardBody>
             <CCardFooter>
-              {(user.data.userData.role[0] =="Admin" || date.isFree ) && <CButton type="submit" size="sm" color="primary" onClick={() => {send(0);}}><CIcon name="cil-scrubber" /> Kaydet</CButton> }
+              {(user.data.userData.role[0] =="Admin" || user.data.userData.role[0] =="Sekreter"  || date.isFree ) && <CButton type="submit" size="sm" color="primary" onClick={() => {send(0);}}><CIcon name="cil-scrubber" /> Kaydet</CButton> }
               {user.data.userData.role[0] =="Admin"  && dateId!=0 && dateId!=null &&    <CButton type="submit" size="sm" color="success" onClick={() => {send(1);}}><CIcon name="cil-scrubber" /> Yeni Randevu</CButton> }
            
               {/* <CButton type="reset" size="sm" color="danger"><CIcon name="cil-ban" onClick={() => clear()} /> Temizle</CButton> */}

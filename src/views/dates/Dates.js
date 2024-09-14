@@ -60,6 +60,9 @@ if (user.data.userData.role[0] =="Admin") {
 else if (user.data.userData.role[0] =="Uzman") {
   fields = ['Tarih','Gün','Saat','Danışan','Uzman1','Anne Adı', 'Baba Adı','Oda', 'Geliş Nedeni','Yönlendiren','Uzman Ücreti', 'Açıklama','id']
 }
+else if (user.data.userData.role[0] =="Sekreter") {
+  fields = ['Tarih','Gün','Saat','Danışan','Uzman1','Anne Adı', 'Baba Adı','Oda', 'Geliş Nedeni','Yönlendiren','Uzman Ücreti', 'Kasa Ücreti', "Toplam Ücret",'Ödenme Durumu', 'Açıklama','id']
+}
 
 groupFields = ['Danışan','Uzman1','Tekrar Sayısı']
 // const { page } = useParams();
@@ -545,7 +548,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
                         <CButtonGroup>
                       
                           {user.data.userData.role[0] =="Admin"?<CButton color="secondary" onClick={() => onClickSendMessage(item.Danışan, item.Uzman1, item.Tarih, item.Saat, item.mobilePhone, item.id,  item.Gün == "Monday"?"Pazartesi":item.Gün == "Tuesday"?"Salı":item.Gün == "Wednesday"?"Çarşamba":item.Gün == "Thursday"?"Perşembe":item.Gün == "Friday"?"Cuma":item.Gün == "Saturday"?"Cumartesi":item.Gün == "Sunday"?"Pazar":"")}>Mesaj Gönder</CButton>:""}
-                        { !item.isFree && <CButton color="secondary" onClick={() => onClickEdit(!showEdit, item.id)}>{user.data.userData.role[0] =="Admin"?"Düzenle":"Detay"}</CButton>}
+                        { !item.isFree && <CButton color="secondary" onClick={() => onClickEdit(!showEdit, item.id)}>{user.data.userData.role[0] =="Admin" || user.data.userData.role[0] =="Sekreter"?"Düzenle":"Detay"}</CButton>}
                           {user.data.userData.role[0] =="Admin" || item.isFree ?<CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>:""}
                         </CButtonGroup>
                   </td>

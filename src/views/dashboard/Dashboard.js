@@ -179,8 +179,9 @@ const Dashboard = () => {
 
     const user = JSON.parse(localStorage.getItem('user'));
 
-    if (user.data.userData.role[0]!="Admin") {
-    
+    debugger;
+    if (user.data.userData.role[0] != "Admin" || user.data.userData.role[0] != "Sekreter" ) 
+    {
       history.push("/Dates");
     }
     sendApi();
@@ -192,6 +193,7 @@ const Dashboard = () => {
       (result) => {
         let _dateDayStatisticData = [];
         let totalDateDayStatistic = 0;
+        debugger;
         for (const [key, value] of Object.entries(result.data)) {
           totalDateDayStatistic += parseInt(value);
         }

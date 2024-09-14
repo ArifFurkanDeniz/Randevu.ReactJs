@@ -86,8 +86,9 @@ const Profit = () => {
   const [costTotal, setCostTotal] = useState([]);
   const [costUser, setCostUser] = useState([]);
   const [costTest, setCostTest] = useState([]);
+  const [costKDV, setCostKDV] = useState([]);
 
-  const fields = ['Uzman', 'Uzman Ücreti', 'Test Ücreti', 'Kasa Ücreti', 'Toplam Ücret','Id']
+  const fields = ['Uzman', 'Uzman Ücreti', 'Test Ücreti', 'Kasa Ücreti', 'KDV Ücreti', 'Toplam Ücret','Id']
   const user2 = JSON.parse(localStorage.getItem('user'));
   const history = useHistory();
   useEffect(() => {
@@ -135,16 +136,19 @@ const Profit = () => {
         let totalCostUser = 0;
         let totalCostTest = 0;
         let totalCostCase = 0;
+        let totalCostKDV = 0;
         result.data.forEach(element => {
           totalCostUser += element.costUser;
           totalCostTest += element.costTest;
           totalCostCase += element.costCase;
+          totalCostKDV += element.kdv;
           newDates.push(
           {
             "Uzman" : element.userName,
             "Uzman Ücreti" : element.costUser,
             "Test Ücreti" : element.costTest,
             "Kasa Ücreti" : element.costCase,
+            "KDV Ücreti" : element.kdv,
             "UserId" : element.userId,
             // "id" : element.id,
             "Toplam Ücret" : element.costCase + element.costTest + element.costUser
@@ -153,6 +157,7 @@ const Profit = () => {
 
         setCostUser(totalCostUser);
         setCostTest(totalCostTest);
+        setCostKDV(totalCostKDV);
         setCostTotal(totalCostCase);
    
 
@@ -340,6 +345,7 @@ const clear = () => {
               <div class="ml-auto">Toplam Uzman Ücreti : <strong>{costUser}</strong></div>
               { (user2.data.userData.role[0] =="Admin") &&  <div class="ml-auto">Toplam Test Ücreti : <strong>{costTest}</strong></div>}
               { (user2.data.userData.role[0] =="Admin") && <div class="ml-auto">Toplam Kasa Ücreti : <strong>{costTotal}</strong></div>}
+              { (user2.data.userData.role[0] =="Admin") && <div class="ml-auto">KDV : <strong>{costKDV}</strong></div>}
               { (user2.data.userData.role[0] =="Admin") &&
               <div class="ml-auto">Toplam Ücret : <strong>{costUser  + costTest + costTotal}</strong>
               <ul>

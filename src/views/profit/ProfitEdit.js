@@ -62,7 +62,7 @@ const ProfitEdit = (data) => {
   const [profitData, setProfitData] = useState([]);
 const [costTotal, setCostTotal] = useState([]);
 const [costUser, setCostUser] = useState([]);
-  const fields = ['Danışan', 'Randevu Tarihi', 'Uzman Ücreti', 'Test Ücreti', 'Kasa Ücreti', 'Toplam Ücret', 'Ödeme Durumu']
+  const fields = ['Danışan', 'Randevu Tarihi', 'Uzman Ücreti', 'Test Ücreti', 'Kasa Ücreti', 'KDV Ücreti', 'Toplam Ücret', 'Ödeme Durumu']
 
 
   useEffect(() => {
@@ -83,6 +83,7 @@ const [costUser, setCostUser] = useState([]);
             "Uzman Ücreti" : element.costUser,
             "Test Ücreti" : element.costTest,
             "Kasa Ücreti" : element.costCase,
+            "KDV Ücreti" : element.kdv,
             "Ödeme Durumu" : element.costStatus,
             // "id" : element.id,
             "Toplam Ücret" : element.costCase + element.costTest + element.costUser

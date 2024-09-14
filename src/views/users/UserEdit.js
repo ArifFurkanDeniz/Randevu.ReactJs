@@ -161,6 +161,7 @@ const UserEdit = (data) => {
                  <option value="">Seçiniz</option>
                  <option value="3">Uzman</option>
                  <option value="2">Admin</option>
+                 <option value="5">Sekreter</option>
                   </CSelect>
                   </CCol>
                 </CFormGroup>

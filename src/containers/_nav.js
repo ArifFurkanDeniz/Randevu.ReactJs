@@ -2,7 +2,7 @@ var data = [];
 
 const user = JSON.parse(localStorage.getItem('user'));
 
-if(user.data.userData.role[0] =="Admin")
+if(user.data.userData.role[0] == "Admin")
 {
   data.push( {
     _tag: 'CSidebarNavItem',
@@ -14,21 +14,25 @@ if(user.data.userData.role[0] =="Admin")
       // text: 'NEW',
     }
   });
-
-
 }
 
 
+if(user.data.userData.role[0] !="Sekreter")
+  {
+
+    data.push(   {
+      _tag: 'CSidebarNavItem',
+      name: 'Kazanç Listesi',
+      to: '/profit',
+      icon: 'cil-chart-pie',
+    });
+  
+  }
 // data.push(  {
 //   _tag: 'CSidebarNavTitle',
 //   _children: ['Randevu']
 // });
-data.push(   {
-  _tag: 'CSidebarNavItem',
-  name: 'Kazanç Listesi',
-  to: '/profit',
-  icon: 'cil-chart-pie',
-});
+
 
 data.push(   {
   _tag: 'CSidebarNavItem',

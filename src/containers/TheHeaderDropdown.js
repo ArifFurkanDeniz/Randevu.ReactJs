@@ -36,7 +36,7 @@ const [passwordId, setPasswordId] = useState(null)
 const [showPassword, setshowPassword] = useState(false)
 const [showEdit, setshowEdit] = useState(false)
 const onClickPassword2 = (showEdit) =>{
-  debugger;
+
   const user = JSON.parse(localStorage.getItem('user'));
   setPasswordId(user.data.userData.id);
   setshowPassword(showEdit);

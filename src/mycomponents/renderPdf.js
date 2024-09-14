@@ -5,10 +5,10 @@ const RenderPdf = (getData) => {
     const [data, setData] = useState();
     useEffect(() => {
      
-debugger;
+
         ResumeService.getPdf(getData.guid,null).then(
             (result) => {
-            debugger;
+
                 setData(result.data);
             },
             (error) => {

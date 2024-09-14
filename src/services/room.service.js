@@ -29,7 +29,6 @@ const save = (room) => {
 }
 
 const getRoom = (id) => {
-  debugger;
   let header = authHeader();
   let query ='?Id='+id;
 
