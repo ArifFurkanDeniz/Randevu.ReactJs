@@ -490,7 +490,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
             <CCardFooter>
             <div class="d-flex">
               <div>  <CButton id="submit" name="submit" type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Gönder</CButton> </div>
-             { user.data.userData.role[0] =="Admin" &&   <div><CButton type="submit" size="sm" color="primary" onClick={() => {orderByUserClick();}}><CIcon name="cil-scrubber" /> Uzmana Göre Sırala</CButton></div> } 
+             { user.data.userData.role[0] =="Admin" || user.data.userData.role[0] =="Sekreter" &&   <div><CButton type="submit" size="sm" color="primary" onClick={() => {orderByUserClick();}}><CIcon name="cil-scrubber" /> Uzmana Göre Sırala</CButton></div> } 
               {/* <div><CButton type="submit" size="sm" color="primary" onClick={() => {groupClick();}}><CIcon name="cil-scrubber" /> Grupla</CButton></div> */}
               <div>  <CButton size="sm" color="primary" onClick={() => {excelExport();}}><CIcon name="cil-scrubber" /> Excel'e Aktar</CButton> </div>
               <div>  <CButton type="reset" size="sm" color="danger"  onClick={() => clear()} ><CIcon name="cil-ban"/> Temizle</CButton></div>
@@ -547,7 +547,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
 
                         <CButtonGroup>
                       
-                          {user.data.userData.role[0] =="Admin"?<CButton color="secondary" onClick={() => onClickSendMessage(item.Danışan, item.Uzman1, item.Tarih, item.Saat, item.mobilePhone, item.id,  item.Gün == "Monday"?"Pazartesi":item.Gün == "Tuesday"?"Salı":item.Gün == "Wednesday"?"Çarşamba":item.Gün == "Thursday"?"Perşembe":item.Gün == "Friday"?"Cuma":item.Gün == "Saturday"?"Cumartesi":item.Gün == "Sunday"?"Pazar":"")}>Mesaj Gönder</CButton>:""}
+                          {user.data.userData.role[0] =="Admin" || user.data.userData.role[0] =="Sekreter" ?<CButton color="secondary" onClick={() => onClickSendMessage(item.Danışan, item.Uzman1, item.Tarih, item.Saat, item.mobilePhone, item.id,  item.Gün == "Monday"?"Pazartesi":item.Gün == "Tuesday"?"Salı":item.Gün == "Wednesday"?"Çarşamba":item.Gün == "Thursday"?"Perşembe":item.Gün == "Friday"?"Cuma":item.Gün == "Saturday"?"Cumartesi":item.Gün == "Sunday"?"Pazar":"")}>Mesaj Gönder</CButton>:""}
                         { !item.isFree && <CButton color="secondary" onClick={() => onClickEdit(!showEdit, item.id)}>{user.data.userData.role[0] =="Admin" || user.data.userData.role[0] =="Sekreter"?"Düzenle":"Detay"}</CButton>}
                           {user.data.userData.role[0] =="Admin" || item.isFree ?<CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>:""}
                         </CButtonGroup>
