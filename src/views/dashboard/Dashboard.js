@@ -180,7 +180,7 @@ const Dashboard = () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     debugger;
-    if (user.data.userData.role[0] != "Admin" || user.data.userData.role[0] != "Sekreter" ) 
+    if (user.data.userData.role[0] == "Uzman" || user.data.userData.role[0] == "Sekreter" ) 
     {
       history.push("/Dates");
     }
