@@ -490,7 +490,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
             <CCardFooter>
             <div class="d-flex">
               <div>  <CButton id="submit" name="submit" type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Gönder</CButton> </div>
-             { user.data.userData.role[0] =="Admin" || user.data.userData.role[0] =="Sekreter" &&   <div><CButton type="submit" size="sm" color="primary" onClick={() => {orderByUserClick();}}><CIcon name="cil-scrubber" /> Uzmana Göre Sırala</CButton></div> } 
+             { (user.data.userData.role[0] =="Admin" || user.data.userData.role[0] =="Sekreter") &&   <div><CButton type="submit" size="sm" color="primary" onClick={() => {orderByUserClick();}}><CIcon name="cil-scrubber" /> Uzmana Göre Sırala</CButton></div> } 
               {/* <div><CButton type="submit" size="sm" color="primary" onClick={() => {groupClick();}}><CIcon name="cil-scrubber" /> Grupla</CButton></div> */}
               <div>  <CButton size="sm" color="primary" onClick={() => {excelExport();}}><CIcon name="cil-scrubber" /> Excel'e Aktar</CButton> </div>
               <div>  <CButton type="reset" size="sm" color="danger"  onClick={() => clear()} ><CIcon name="cil-ban"/> Temizle</CButton></div>
