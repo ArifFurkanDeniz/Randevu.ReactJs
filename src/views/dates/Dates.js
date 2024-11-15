@@ -437,7 +437,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
                
 
                 
-               { (user.data.userData.role[0] =="Admin") && <>
+               { (user.data.userData.role[0] =="Admin" || user.data.userData.role[0] =="Sekreter") && <>
                   <CCol md="2">
                     <CLabel htmlFor="text-input">Uzman 1</CLabel>
                   </CCol>
@@ -549,7 +549,7 @@ today2 = yyyy + '-' + mm + '-' + dd ;
                       
                           {user.data.userData.role[0] =="Admin" || user.data.userData.role[0] =="Sekreter" ?<CButton color="secondary" onClick={() => onClickSendMessage(item.Danışan, item.Uzman1, item.Tarih, item.Saat, item.mobilePhone, item.id,  item.Gün == "Monday"?"Pazartesi":item.Gün == "Tuesday"?"Salı":item.Gün == "Wednesday"?"Çarşamba":item.Gün == "Thursday"?"Perşembe":item.Gün == "Friday"?"Cuma":item.Gün == "Saturday"?"Cumartesi":item.Gün == "Sunday"?"Pazar":"")}>Mesaj Gönder</CButton>:""}
                         { !item.isFree && <CButton color="secondary" onClick={() => onClickEdit(!showEdit, item.id)}>{user.data.userData.role[0] =="Admin" || user.data.userData.role[0] =="Sekreter"?"Düzenle":"Detay"}</CButton>}
-                          {user.data.userData.role[0] =="Admin" || item.isFree ?<CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>:""}
+                          {user.data.userData.role[0] =="Admin" || user.data.userData.role[0] =="Sekreter" || item.isFree ?<CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>:""}
                         </CButtonGroup>
                   </td>
                 

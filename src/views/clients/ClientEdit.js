@@ -230,7 +230,7 @@ const ClientEdit = (data) => {
               </CForm>
             </CCardBody>
             <CCardFooter>
-              {user.data.userData.role[0] =="Admin" &&  <CButton type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Kaydet</CButton> }
+              {(user.data.userData.role[0] =="Admin" || user.data.userData.role[0] =="Sekreter")&&  <CButton type="submit" size="sm" color="primary" onClick={() => {send();}}><CIcon name="cil-scrubber" /> Kaydet</CButton> }
              
               {/* <CButton type="reset" size="sm" color="danger"><CIcon name="cil-ban" onClick={() => clear()} /> Temizle</CButton> */}
             </CCardFooter>

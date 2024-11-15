@@ -330,7 +330,7 @@ else
     let userControl = false;
     let roomControl = false;
 
-
+debugger;
     DateService.dateUserControl(date.id, date.user1Id, date.dateTime, date.dateHour).then(
       (result) => {
         
@@ -603,7 +603,7 @@ else
                  
                 </CFormGroup>
                 <CFormGroup row>
-                  {user.data.userData.role[0] =="Admin" && <>
+                  {(user.data.userData.role[0] =="Admin" || user.data.userData.role[0] =="Sekreter") && <>
                   <CCol md="2">
                     <CLabel htmlFor="text-input">Uzman 1</CLabel>
                   </CCol>
