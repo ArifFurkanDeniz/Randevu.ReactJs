@@ -53,7 +53,7 @@ const user = JSON.parse(localStorage.getItem('user'));
 //const fields = ['dateTime','dateDay','dateHour','client','user1','user2','room','directional','costUser','costCase','id']
 let fields = [];
 let groupFields = [];
-if (user.data.userData.role[0] =="Admin") {
+if (user.data.userData.role[0] =="Admin" || user.data.userData.role[0] =="Sekreter" ) {
   fields = ['Tarih','Gün','Saat','Danışan','Uzman1','Anne Adı', 'Baba Adı','Oda', 'Geliş Nedeni','Yönlendiren','Uzman Ücreti', 'Kasa Ücreti', "Toplam Ücret",'Ödenme Durumu', 'Açıklama','id']
 }
 else if (user.data.userData.role[0] =="Uzman") {
@@ -226,9 +226,9 @@ const ClientDates = (data) => {
                   <td>
 
                         <CButtonGroup>
-                        {user.data.userData.role[0] =="Admin"?<CButton color="secondary" onClick={() => onClickSendMessage(item.Danışan, item.Uzman1, item.Tarih, item.Saat, item.mobilePhone, item.id,  item.Gün == "Monday"?"Pazartesi":item.Gün == "Tuesday"?"Salı":item.Gün == "Wednesday"?"Çarşamba":item.Gün == "Thursday"?"Perşembe":item.Gün == "Friday"?"Cuma":item.Gün == "Saturday"?"Cumartesi":item.Gün == "Sunday"?"Pazar":"")}>Mesaj Gönder</CButton>:""}
+                        {user.data.userData.role[0] =="Admin" || user.data.userData.role[0] =="Sekreter"?<CButton color="secondary" onClick={() => onClickSendMessage(item.Danışan, item.Uzman1, item.Tarih, item.Saat, item.mobilePhone, item.id,  item.Gün == "Monday"?"Pazartesi":item.Gün == "Tuesday"?"Salı":item.Gün == "Wednesday"?"Çarşamba":item.Gün == "Thursday"?"Perşembe":item.Gün == "Friday"?"Cuma":item.Gün == "Saturday"?"Cumartesi":item.Gün == "Sunday"?"Pazar":"")}>Mesaj Gönder</CButton>:""}
                         { !item.isFree && <CButton color="secondary" onClick={() => onClickEdit(!showEdit, item.id)}>{user.data.userData.role[0] =="Admin"?"Düzenle":"Detay"}</CButton>}
-                          {user.data.userData.role[0] =="Admin" || item.isFree ?<CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>:""}
+                          {user.data.userData.role[0] =="Admin" || user.data.userData.role[0] =="Sekreter" || item.isFree ?<CButton color="secondary" onClick={() => onClickDelete(!showDelete,item.id)}>Sil</CButton>:""}
                      </CButtonGroup>
                   </td>
                 
