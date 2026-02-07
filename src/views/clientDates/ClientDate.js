@@ -164,7 +164,7 @@ const ClientDates = (data) => {
 
 
   const onClickSendMessage = (fullName, userName, dateTime, hour, mobilePhone,id, day) =>{
-    let text = "Değerli Danışanımız, "+ dateTime + " tarihinde "+ day + " günü saat " + hour + "'da uzmanımız "+ userName + " ile olan seansınıza bekleniyorsunuz. Saygılarımızla, Q Psikoloji.";
+    let text = "Değerli Danışanımız, "+ dateTime + " tarihinde "+ day + " günü saat " + hour + "'da uzmanımız "+ userName + " ile olan randevunuza bekleniyorsunuz. Saygılarımızla, Q Psikoloji.";
     let link = "https://api.whatsapp.com/send?phone=+9"+mobilePhone+"&text="+text;
     window.open(link);
 
