@@ -68,7 +68,7 @@ const DateEdit = (data) => {
     const [percent, setPercent] = useState(null)
     const [totalPrice, setTotalPrice] = useState(null)
     const [date, setDate] = useState({
-      Id : 0,
+      id : 0,
       dateTime: null,
       clientId: 0,
       user1Id: null,
@@ -160,8 +160,12 @@ const DateEdit = (data) => {
 
       DateService.getDate(data.id).then(
         (result) => {
-
-            setDate(result.data);
+            const loadedDate = {
+              ...result.data,
+              id: result.data.id || result.data.Id,
+              Id: result.data.id || result.data.Id
+            };
+            setDate(loadedDate);
             setDateId(data.id);
             
         },
@@ -225,6 +229,16 @@ const DateEdit = (data) => {
 
   DateService.save(date).then(
     (result2) => {
+        if (result2.data.status == false) {
+          if (result2.data.message && result2.data.message.includes("uzman")) {
+            setShowUserControlModal(true);
+          }
+          else {
+            setShowRoomControlModal(true);
+          }
+          return;
+        }
+
         setShowRoomControlModal(false);
         setShowUserControlModal(false);
         setShowModal(true);
@@ -243,10 +257,13 @@ const DateEdit = (data) => {
 
   const send = (status) => {
 
+    const isNewAppointment = status == 1;
+    const appointmentId = isNewAppointment ? 0 : (date.id || date.Id || dateId || 0);
 
-    if (status==1)
-    {
-      date.id = 0;
+    date.id = appointmentId;
+    date.Id = appointmentId;
+
+    if (isNewAppointment) {
       date.costStatus = 0;
     }
  
@@ -331,7 +348,8 @@ else
     let roomControl = false;
 
 debugger;
-    DateService.dateUserControl(date.id, date.user1Id, date.dateTime, date.dateHour).then(
+    const controlDateId = appointmentId;
+    DateService.dateUserControl(controlDateId, date.user1Id, date.dateTime, date.dateHour).then(
       (result) => {
         
          if (result.data.status == true) {
@@ -343,7 +361,7 @@ debugger;
           setShowUserControlModal(true);
          }
 
-         DateService.dateRoomControl(date.id, date.roomId, date.dateTime, date.dateHour).then(
+         DateService.dateRoomControl(controlDateId, date.roomId, date.dateTime, date.dateHour).then(
           (result) => {
           
              if (result.data.status == true) {
@@ -788,11 +806,10 @@ debugger;
           <CModalTitle>Uzman Çakışma Uyarısı</CModalTitle>
         </CModalHeader>
         <CModalBody>
-            <div>Seçtiğiniz tarihte seçtiğiniz uzman doludur. Devam etmek istiyor musunuz?</div>     
+            <div>Seçtiğiniz tarihte seçtiğiniz uzman doludur. Lütfen farklı bir uzman veya saat seçiniz.</div>     
         </CModalBody>
   <CModalFooter>
-          <CButton color="primary" onClick={() => saveDate()}>Evet</CButton>
-          <CButton color="secondary" onClick={() => setShowUserControlModal(!showUserControlModal)}>Hayır</CButton>
+          <CButton color="secondary" onClick={() => setShowUserControlModal(!showUserControlModal)}>Tamam</CButton>
         </CModalFooter> 
       </CModal> 
 
@@ -805,11 +822,10 @@ debugger;
           <CModalTitle>Oda Çakışma Uyarısı</CModalTitle>
         </CModalHeader>
         <CModalBody>
-            <div>Seçtiğiniz tarihte seçtiğiniz oda doludur. Devam etmek istiyor musunuz?</div>     
+            <div>Seçtiğiniz tarihte seçtiğiniz oda doludur. Lütfen farklı bir oda veya saat seçiniz.</div>     
         </CModalBody>
   <CModalFooter>
-          <CButton color="primary" onClick={() => saveDate()}>Evet</CButton>
-          <CButton color="secondary" onClick={() => setShowRoomControlModal(!showRoomControlModal)}>Hayır</CButton>
+          <CButton color="secondary" onClick={() => setShowRoomControlModal(!showRoomControlModal)}>Tamam</CButton>
         </CModalFooter> 
       </CModal> 
      </div>

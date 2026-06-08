@@ -62,8 +62,14 @@ const deleteDate = (id) => {
 const save = (date) => {
   let header = authHeader();
   date.dateTime = date.dateTime+'T'+date.dateHour+":00";
+  const appointmentId = date.id || date.Id || 0;
+  const payload = {
+    ...date,
+    id: appointmentId,
+    Id: appointmentId
+  };
   return axios
-  .post(API_URL + 'Save', date, { headers: header })
+  .post(API_URL + 'Save', payload, { headers: header })
   .then((response) => {
     return response;
   });
